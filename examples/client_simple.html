@@ -1,0 +1,14 @@
+<!doctype html>
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+<body><script>
+	var gameServer	= new SimpleMMOServer('aRoom', {
+		nickName	: "user-"+Math.floor(Math.random()*100000)
+	});
+	setInterval(function(){
+		gameServer.clientEcho('hello world' + Date.now())
+		gameServer.addEventListener('clientEcho', function(data){
+			console.log('received echo', data)
+		})
+	}, 1000)
+</script></body>

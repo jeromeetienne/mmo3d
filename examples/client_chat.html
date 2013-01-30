@@ -1,0 +1,128 @@
+<!doctype html>
+<!-- <script src="http://jetienne.tquery-multiplayerserver.jit.su/socket.io/socket.io.js"></script>
+ -->
+<script src="/socket.io/socket.io.js"></script>
+
+<script src="client.js"></script>
+<body><div>
+	<form action="javascript:void(0)" id='nicknameForm'>
+		<b>Nickname:</b> <input type="text"/>
+		Latency: <span style='font-weight: bolder' id='latencyEl'>n/a</span>
+	</form>
+	<textarea cols="100%" rows="5" id='chatOutput' style='overflow-y: scroll;'></textarea>
+	<form action="javascript:void(0)" id='chatInputForm'>
+		<input size=100 type="text"/> <b>Message</b> 
+	</form>
+</div>
+<div>
+	<h3>Users List</h3>
+	<pre id='usersList'></pre>
+</div><script>
+	var gameServer	= new SimpleMMOServer('aRoom', {
+		nickName	: "user-"+Math.floor(Math.random()*100000)
+	});
+
+	// handle nicknameForm
+	document.getElementById('nicknameForm')[0].value	= gameServer.userInfo().nickName;
+	document.getElementById('nicknameForm').addEventListener('submit', function(){
+		var formElement		= document.getElementById('nicknameForm');
+		var userInfo		= gameServer.userInfo();
+		userInfo.nickName	= formElement[0].value;
+		gameServer.userInfo(userInfo);
+		document.getElementById('chatInputForm')[0].focus();
+	});
+
+	// display latency
+	gameServer.addEventListener('pong', function(){
+		document.getElementById('latencyEl').innerHTML	= gameServer.latency()+'ms';
+	});
+
+	gameServer.addEventListener('clientEcho', function(data){
+		console.log('received clientEcho', data);
+	});
+
+	gameServer.addEventListener('clientBroadcast', function(data){
+		console.log('received clientBroadcast', data);
+	});
+
+	gameServer.addEventListener('userJoin', function(data){
+		//console.log('userJoin', data)
+		var nickName	= data.userInfo.nickName;
+		updateChatOutput('"'+nickName+'" just joined.')
+	});
+
+	gameServer.addEventListener('userLeft', function(data){
+		//console.log('left user', data.userInfo.nickName)
+		// notify the user
+		var nickName	= data.userInfo.nickName;
+		updateChatOutput('"'+nickName+'" just left.')
+		// update usersList
+		var usersListEl	= document.getElementById('usersList')
+		usersListEl.innerHTML	= JSON.stringify(gameServer.usersInfo(), null, '\t')
+	});
+
+	gameServer.addEventListener('userInfo', function(sourceId, newUserInfo, oldUserInfo){
+		console.log('userInfo', arguments, gameServer.usersInfo())
+		if( oldUserInfo && oldUserInfo.nickName !== newUserInfo.nickName ){
+			//console.log('nickNameChange')
+			updateChatOutput('"'+oldUserInfo.nickName+'" is now called "'+newUserInfo.nickName+'"')
+		}
+		// update usersList
+		var usersListEl	= document.getElementById('usersList')
+		usersListEl.innerHTML	= JSON.stringify(gameServer.usersInfo(), null, '\t')
+	});
+
+	gameServer.addEventListener('connected', function(){
+		//console.log('connected')
+		// update usersList
+		var usersListEl	= document.getElementById('usersList')
+		usersListEl.innerHTML	= JSON.stringify(gameServer.usersInfo(), null, '\t')
+	});
+	
+	//////////////////////////////////////////////////////////////////////////
+	//		Chat							//
+	//////////////////////////////////////////////////////////////////////////
+
+	document.getElementById('chatInputForm')[0].focus();
+	// listen to chat text input	
+	document.getElementById('chatInputForm').addEventListener('submit', function(){
+		var formElement	= document.getElementById('chatInputForm');
+		gameServer.clientEcho({
+			type	: 'say',
+			data	: {
+				text	: formElement[0].value
+			}
+		});
+		formElement[0].value	= null;
+	});
+	gameServer.addEventListener('clientEcho', function(data){
+		// keep only clientEcho.say
+		if( data.message.type !== 'say' )	return;
+		console.log('received clientEcho Say', JSON.stringify(data, null, '\t'))
+		// get said text
+		var text	=  data.message.data.text;
+		// add nickName
+		var usersInfo	= gameServer.usersInfo();
+console.log('usersInfo', usersInfo)
+console.log('sourceId', data.sourceId)
+		var originInfo	= usersInfo[data.sourceId];
+		text		= originInfo.nickName +': ' + text;
+		// update chatOutput
+		updateChatOutput(text)
+	});
+
+	function updateChatOutput(text){
+		// add time
+		var hours	= new Date().getHours();
+		var minutes	= new Date().getMinutes();
+		text		= "("+(hours<10?'0'+hours:hours)+":"+(minutes<10?'0'+minutes:minutes)+") " + text;
+		// update UI
+		var chatOutput	=  document.getElementById('chatOutput');
+		chatOutput.value+= text+'\n';
+		// force the element to scroll
+		chatOutput.scrollTop = chatOutput.scrollHeight;
+	};
+</script>
+<!-- github ribbon -->
+<a href="https://github.com/jeromeetienne/SimpleMMOServer"><img style="position: absolute; top: 0; right: 0; border: 0; z-index:9999" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+</body>
