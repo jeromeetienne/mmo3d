@@ -1,4 +1,4 @@
-* room.js
+* room.js, script node in the world directory
 * ctor, .destroy(),.update()
 * .update(delta, now) to update bots
 * for network hooks use the socket
