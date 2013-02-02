@@ -10,3 +10,6 @@
 * check if room already exists, if not create it
 * store it in roomHandlers[]
 * on disconnection, remove it if empty
+
+### first test
+* a minecraft char running in circle
