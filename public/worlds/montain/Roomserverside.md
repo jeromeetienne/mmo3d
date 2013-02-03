@@ -3,6 +3,7 @@
 * .update(delta, now) to update bots
 * for network hooks?
   * use the socket? Use special event notified thru socket?
+  * specific event is safer, finer granularity, use eventemitter already in socket
   * Needed for anti cheat
 
 ### creation
