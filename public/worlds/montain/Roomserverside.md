@@ -13,3 +13,5 @@
 
 ### first test
 * a minecraft char running in circle
+* user based on twitter
+* people as pacman or gost
