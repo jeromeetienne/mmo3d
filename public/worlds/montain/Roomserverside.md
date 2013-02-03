@@ -3,7 +3,7 @@
 * .update(delta, now) to update bots
 * for network hooks?
   * use the socket? Use special event notified thru socket?
-  * anti cheat
+  * Needed for anti cheat
 
 ### creation
 * room name on joinRoom
