@@ -1,8 +1,8 @@
 * room.js, script node in the world directory
 * ctor, .destroy(),.update()
 * .update(delta, now) to update bots
-* for network hooks use the socket
-  * server side physics
+* for network hooks?
+  * use the socket? Use special event notified thru socket?
   * anti cheat
 
 ### creation
