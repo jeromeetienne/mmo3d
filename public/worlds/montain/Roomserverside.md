@@ -1,3 +1,4 @@
+### what is it
 * room.js, script node in the world directory
 * ctor, .destroy(),.update()
 * .update(delta, now) to update bots
