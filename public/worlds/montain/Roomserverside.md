@@ -6,8 +6,7 @@
   * Needed for anti cheat
 
 ### creation
-* room name on joinRoom
-* check if room already exists, if not create it
+* room name on joinRoom! Create it doesnt exist
 * store it in roomHandlers[]
 * on disconnection, remove it if empty
 
