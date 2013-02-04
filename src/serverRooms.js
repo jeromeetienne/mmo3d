@@ -42,6 +42,15 @@ ServerRooms.prototype.leave = function(roomName, socket) {
 	}
 }
 
+ServerRooms.prototype.exists	= function(roomName){
+	return this._rooms[roomName]	? true : false;
+};
+
+ServerRooms.prototype.get	= function(roomName){
+	console.assert( this.exists(roomName) );
+	return this._rooms[roomName];
+};
+
 /**
  * update each rooms
  * 

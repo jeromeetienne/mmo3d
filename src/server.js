@@ -46,6 +46,15 @@ io.sockets.on('connection', function(socket){
 		io.sockets.clients(roomName).forEach(function(client){
 			usersInfo[client.id]	= client._smmo.userInfo;
 		});
+		
+		// update usersInfo with botsInfo
+		var botsUserInfo= serverRooms.get(roomName).botsUserInfo();
+		Object.keys(botsUserInfo).forEach(function(clientId){
+			var botUserInfo		= botsUserInfo[clientId]
+			usersInfo[clientId]	= botUserInfo;
+		});
+			
+		// tell this socket, the room is joined
 		socket.emit('roomJoined', {
 			sourceId	: sourceId,
 			usersInfo	: usersInfo

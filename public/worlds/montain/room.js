@@ -3,7 +3,15 @@
  */
 var Room	= function(){
 	console.log('Room ctor');
-	this._sockets	= [];
+	this._sockets		= [];
+	this._botsUserInfo	= {};
+	
+	// create bot identity
+	var clientId		= 'Bot-clientid-'+Math.floor(Math.random()*10000).toString(16);
+	this._botsUserInfo[clientId]	= {
+		nickName	: 'Bot-'+Math.floor(Math.random()*10000).toString(16),
+		skinBasename	: 'char.png',
+	};
 };
 
 /**
@@ -14,12 +22,20 @@ Room.prototype.destroy	= function(){
 	console.assert(this.count() === 0);
 };
 
+Room.prototype.botsUserInfo = function() {
+	return this._botsUserInfo;
+};
+
 /**
  * update this room
  * @param  {Number} delta seconds since last update
  * @param  {Number} now   seconds since the begining of time
  */
 Room.prototype.update	= function(delta, now){
+// TODO how to handle bots at this level ?
+// a cross world class ?
+// - user info needed
+// - location in the world too
 }
 
 Room.prototype.join	= function(socket){
