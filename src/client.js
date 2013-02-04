@@ -1,7 +1,7 @@
 var SimpleMMOServer	= function(roomName, userInfo, serverUrl){
-	this._roomName	= roomName || '';	
-	this._userInfo	= userInfo || {};
-	serverUrl	= serverUrl || ''
+	this._roomName	= roomName	|| '';	
+	this._userInfo	= userInfo	|| {};
+	serverUrl	= serverUrl	|| ''
 	var socket	= io.connect(serverUrl);
 	this._socket	= socket;
 
@@ -43,9 +43,7 @@ var SimpleMMOServer	= function(roomName, userInfo, serverUrl){
 		// test if it is a new user
 		var newUser	= oldUserInfo === undefined ? true : false;
 		// update usersInfo
-console.log('pre usersInfo', this._usersInfo, data.sourceId)
 		this._usersInfo[data.sourceId]	= data.userInfo;
-console.log('post usersInfo', this._usersInfo,  JSON.stringify(this._usersInfo, null, '\t'))
 		// notify event
 		if( newUser && data.sourceId !== this._sourceId){
 			this.dispatchEvent('userJoin', data);			

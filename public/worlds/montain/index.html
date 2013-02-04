@@ -10,7 +10,7 @@
 	var serverUrl	= onLocalhost ? 'http://localhost:8000/' : 'http://simplemmoserver.jit.su:80/';
 	var load	= function(url){ document.write("\x3cscript src='"+url+"'>\x3c/script>"); };
 	load(serverUrl+'socket.io/socket.io.js');
-	load(serverUrl+'examples/client.js');
+	load(serverUrl+'src/client.js');
 })();	
 </script>
 

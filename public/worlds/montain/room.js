@@ -11,7 +11,7 @@ var Room	= function(){
  */
 Room.prototype.destroy	= function(){
 	console.log('Room dtor');
-	console.assert(this.countSockets() === 0);
+	console.assert(this.count() === 0);
 };
 
 /**
@@ -22,17 +22,22 @@ Room.prototype.destroy	= function(){
 Room.prototype.update	= function(delta, now){
 }
 
-Room.prototype.addSocket = function(socket) {
+Room.prototype.join	= function(socket){
 	this._sockets.push(socket);
 };
 
-Room.prototype.removeSocket = function(socket) {
+Room.prototype.leave	= function(socket){
 	var index	= this._sockets.indexOf(socket);
 	console.assert( index !== -1 );
 	this._sockets.splice(index, 1);
 };
 
-Room.prototype.countSockets = function() {
+Room.prototype.contain	= function(socket){
+	var index	= this._sockets.indexOf(socket);
+	return index !== -1 ? true : false;
+};
+
+Room.prototype.count	= function() {
 	return this._sockets.length;
 };
 
