@@ -16,9 +16,15 @@ app.use(require('express').static(__dirname + '/../'));
  * - userslist == { socket: , userInfo}
 */
 
-var serverRooms	= new (require('./serverRooms'))();
-
 var io		= require('socket.io').listen(server);
+var serverRooms	= new (require('./serverRooms'))(io);
+
+setInterval(function(){
+	var delta	= 1000/30;
+	var now		= Date.now()/1000;
+	serverRooms.update(delta, now);
+}, 1000/30)
+
 io.set('log level', 2);
 io.sockets.on('connection', function(socket){
 	var roomName	= null;
@@ -48,10 +54,10 @@ io.sockets.on('connection', function(socket){
 		});
 		
 		// update usersInfo with botsInfo
-		var botsUserInfo= serverRooms.get(roomName).botsUserInfo();
-		Object.keys(botsUserInfo).forEach(function(clientId){
-			var botUserInfo		= botsUserInfo[clientId]
-			usersInfo[clientId]	= botUserInfo;
+		var botsUserInfo= serverRooms.get(roomName).usersInfo();
+		Object.keys(botsUserInfo).forEach(function(sourceId){
+			var userInfo		= botsUserInfo[sourceId]
+			usersInfo[sourceId]	= userInfo;
 		});
 			
 		// tell this socket, the room is joined
@@ -84,7 +90,6 @@ io.sockets.on('connection', function(socket){
 			sourceId	: sourceId,
 			reason		: 'disconnect'
 		});
-		
 		serverRooms.leave(roomName, socket);
 	})
 	

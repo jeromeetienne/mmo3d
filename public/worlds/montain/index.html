@@ -211,6 +211,7 @@ require([
 		console.assert( players[data.sourceId] );
 		if( data.message.type === 'positionChange' ){
 			if( data.sourceId === mySourceId )	return;
+//console.log('clientEcho', data.message.type, data.sourceId)
 			var player	= players[data.sourceId];
 			var mesh	= player.character.object3D('root')
 			mesh.positionX( data.message.position.x )

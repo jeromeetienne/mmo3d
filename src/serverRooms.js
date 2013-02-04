@@ -1,5 +1,6 @@
-var ServerRooms	= function(){
+var ServerRooms	= function(io){
 	this._rooms	= {};
+	this._io	= io;
 }
 
 ServerRooms.prototype.destroy = function() {
@@ -17,9 +18,9 @@ ServerRooms.prototype.join = function(roomName, socket) {
 	// create the room if needed
 	if( this._rooms[roomName] === undefined ){
 		var worldName	= roomName.split('/')[0];
-		var filepath	= '../public/worlds/'+worldName+'/room';
+		var filepath	= '../public/worlds/'+worldName+'/server/room';
 		var RoomClass	= require(filepath);
-		this._rooms[roomName]	= new RoomClass(roomName);
+		this._rooms[roomName]	= new RoomClass(roomName, this._io);
 	}
 	// get the room
 	var room	= this._rooms[roomName];
@@ -32,6 +33,7 @@ ServerRooms.prototype.join = function(roomName, socket) {
 ServerRooms.prototype.leave = function(roomName, socket) {
 	// get the room
 	var room	= this._rooms[roomName];
+	if( room === undefined )	return;
 	console.assert( room !== undefined );
 	// remove the socket
 	room.leave(socket);
@@ -58,7 +60,8 @@ ServerRooms.prototype.get	= function(roomName){
  * @param  {Number} now   seconds since the begining of time
  */
 ServerRooms.prototype.update = function(delta, now){
-	this._rooms.forEach(function(room){
+	Object.keys(this._rooms).forEach(function(roomName){
+		var room	= this._rooms[roomName];
 		room.update(delta, now)
-	});
+	}.bind(this));
 }
