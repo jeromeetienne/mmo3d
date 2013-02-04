@@ -2,7 +2,7 @@ var Bot	= function(room){
 	this._room	= room;
 	this._sourceId	= 'botClientID-'+Math.floor(Math.random()*10000).toString(16);
 	this._userInfo	= {
-		nickName	: 'Bot-'+Math.floor(Math.random()*10000).toString(16),
+		nickName	: 'Jumper-'+Math.floor(Math.random()*100).toString(16),
 		skinBasename	: 'char.png',
 	};
 
@@ -53,10 +53,9 @@ Bot.prototype.update = function(delta, now) {
 	//console.log('update bot', this._userInfo.nickName)
 	//
 	var angle	= 0.2 * now * Math.PI * 2;
-	var radius	= 2;
-	this._positionChange.position.x	= radius * Math.cos(angle);
-	this._positionChange.position.y	= 0.2 * Math.abs(Math.cos(6*angle));
-	this._positionChange.position.z	= radius * Math.sin(angle);
+	this._positionChange.position.x	= 2.0 * Math.cos(angle);
+	this._positionChange.position.y	= 0.2 * Math.abs(Math.cos(4*angle));
+	this._positionChange.position.z	= 2.0 * Math.sin(angle);
 	this._positionChange.rotation.y	= -(Math.PI-(- angle - Math.PI));
 
 	this._room.emit('clientEcho', {

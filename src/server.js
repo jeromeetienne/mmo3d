@@ -19,11 +19,12 @@ app.use(require('express').static(__dirname + '/../'));
 var io		= require('socket.io').listen(server);
 var serverRooms	= new (require('./serverRooms'))(io);
 
+
+var updatePeriod= 1/60;
 setInterval(function(){
-	var delta	= 1000/30;
 	var now		= Date.now()/1000;
-	serverRooms.update(delta, now);
-}, 1000/30)
+	serverRooms.update(updatePeriod, now);
+}, updatePeriod*1000)
 
 io.set('log level', 2);
 io.sockets.on('connection', function(socket){

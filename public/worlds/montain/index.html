@@ -208,10 +208,12 @@ require([
 	});
 
 	gameServer.addEventListener('clientEcho', function(data){
-		console.assert( players[data.sourceId] );
+		// TODO why is this needed
+		if( !players[data.sourceId] )	return;
+		console.assert( players[data.sourceId], 'clientEcho to unkown player '+data.sourceId );
+		// handle message by data.message.type
 		if( data.message.type === 'positionChange' ){
 			if( data.sourceId === mySourceId )	return;
-//console.log('clientEcho', data.message.type, data.sourceId)
 			var player	= players[data.sourceId];
 			var mesh	= player.character.object3D('root')
 			mesh.positionX( data.message.position.x )
