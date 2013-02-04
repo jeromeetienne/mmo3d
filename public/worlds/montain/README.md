@@ -23,6 +23,14 @@
   * what does it contains ?
   * how to interact with the base server ?
     * events per client ?
+    
+### rewriting
+* i feels like it worth rewriting the client
+* current client is nice for a prototype
+* need to be rewritten to get clean
+* what is the plan to rewrite ?
+  * ok so step by steps...
+  * forget current code
 
 ### characters
 * various characters
@@ -58,3 +66,29 @@
 ### centralisation
 * name stored in browser storage (cookie or other)
 * no important for now
+
+### init steps
+* display a "loading page"
+* connect to the server
+  * dont do anything before being 'roomJoined'
+* then init 3d world
+* then init my player character
+* then receive notification from the server and act accordingly
+
+
+
+
+*******************************************
+### scenarios
+* simple landscape 
+  * grass ground + skybox
+* simple maze with collision
+* enemies ?
+* able to fight each other ?
+  * good idea
+  * how to detect collision
+  * what is the concequence of the collision
+  * how to hit ? yellingm clicking
+* hit with a sword ? throwing a bullet ? (how to handle the bullet)
+* a bullet is a object standalone ...
+  * where is it run ? on the server ?

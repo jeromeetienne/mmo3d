@@ -53,7 +53,8 @@ requirejs.config({
 	},
 });
 require([
-	  'tquery.pproc', 'tquery.skymap', 'tquery.fog'
+	  'tquery.pproc'
+	, 'tquery.skymap'
 	, 'tquery.keyboard'
 	, 'tquery.grassground'
 	, 'tquery.light', 'tquery.minecraft'
@@ -106,18 +107,10 @@ require([
 			}).back()
 			.castShadow(true)
 		world.loop().hook(function(delta, now){
-			text.rotateY(0.05 * delta * Math.PI * 2)
+			var deltaAngle	= 0.05 * delta * Math.PI * 2;
+			text.rotateY(deltaAngle)
 		})
 	}
-
-	// initiate a spritesheet
-	var items	= new tQuery.Spritesheet({
-		url	: '../../vendor/tquery/plugins/minecraft/examples/images/items/items.png',
-		imgW	: 256,
-		imgH	: 256,
-		spriteW	: 16,
-		spriteH	: 16
-	});
 
 	// create ground
 	if( true ){
@@ -131,6 +124,15 @@ require([
 		tQuery.MontainArena.createBasicArena().addTo(world)
 			.scale(40)
 	}
+
+	// initiate a spritesheet
+	var items	= new tQuery.Spritesheet({
+		url	: '../../vendor/tquery/plugins/minecraft/examples/images/items/items.png',
+		imgW	: 256,
+		imgH	: 256,
+		spriteW	: 16,
+		spriteH	: 16
+	});
 
 	//////////////////////////////////////////////////////////////////////////
 	//		lights							//
@@ -147,12 +149,14 @@ require([
 		.shadowMap(512*2,512*2)
 		.shadowCamera(8, -8, 8, -8, 0.1, 10)
 		//.shadowCameraVisible(true)
+
 	// for light to follow character
 	world.loop().hook(function(){
 		if( !players[mySourceId] )	return;
 		var player	= players[mySourceId];
 		var model	= player.character.object3D('root');
 		light.get(0).target.position.copy(model.position());
+
 		var delta	= tQuery.createVector3(-1,2,3);
 		var position	= model.position().clone().addSelf(delta);
 		light.position(position)
@@ -173,7 +177,8 @@ require([
 		nickName	: 'Player-'+Math.floor(Math.random()*10000).toString(16),
 		skinBasename	: 'char.png',
 	};
-	var gameServer	= new SimpleMMOServer(roomName, userInfo, serverUrl);
+	var worldName	= 'montain';
+	var gameServer	= new SimpleMMOServer(worldName+'/'+roomName, userInfo, serverUrl);
 
 	gameServer.addEventListener('roomJoined', function(sourceId, usersInfo){
 		console.log('roomJoined', sourceId, usersInfo, gameServer.usersInfo())
@@ -234,18 +239,17 @@ require([
 
 	setInterval(function(){
 		Object.keys(players).forEach(function(sourceId){
+			// compute player velocity
 			var player	= players[sourceId];
-			var mesh	= player.character.object3D('root')
-			var velocity	= mesh.position().clone().subSelf(player.prevPosition);
-			if( velocity.length() ){
-				player.bodyAnims.start('run');
-			}else{
-				player.bodyAnims.start('stand');
-			}
+			var character3D	= player.character.object3D('root')
+			var velocity	= character3D.position().clone().subSelf(player.prevPosition);
+			// set bodyAnim according to velocity value
+			var animName	= velocity.length() ? 'run' : 'stand';
+			player.bodyAnims.start(animName);
 			// update player.prevPosition/player.prevRotation
-			player.prevPosition.copy( mesh.position() )
-			player.prevRotation.copy( mesh.rotation() )
-		})
+			player.prevPosition.copy( character3D.position() )
+			player.prevRotation.copy( character3D.rotation() )
+		});
 	}, 1000/5);	// Important to be less than framerate - thus you dont misdetect still 
 
 
@@ -318,9 +322,10 @@ require([
 		createPlayer(mySourceId, userInfo)
 
 		var character	= players[mySourceId].character;
+		var character3D	= character.object3D('root');
 		// to enable a tracking camera
 		var cameraControls	= tQuery.createCameraFpsControls({
-			trackedObject	: character.object3D('root').get(0),
+			trackedObject	: character3D.get(0),
 			tCamera		: world.tCamera(),
 		});
 		world.setCameraControls(cameraControls)
@@ -330,14 +335,13 @@ require([
 		// user controls on keyboard						//
 		//////////////////////////////////////////////////////////////////////////
 		tQuery.createMinecraftCharKeyboard2({
-			object3D	: character.object3D('root').get(0),
+			object3D	: character3D.get(0),
 			lateralMove	: 'rotationY',
-			//lateralMove	: 'strafe'
 		});
 		
+		// test if the character is out of the world
 		world.loop().hook(function(){
-			var mesh	= character.object3D('root');
-			var position	= mesh.position();
+			var position	= character3D.position();
 			var maxLength	= 16;
 			if( position.length() > maxLength ){
 				position.setLength(maxLength)				
@@ -347,9 +351,8 @@ require([
 		// periodically send the position of the character
 		// - NOTE: not done on requestAnimationFrame as it has to be done even if page isnt visible
 		setInterval(function(){
-			var mesh	= character.object3D('root');
-			var position	= mesh.position();
-			var rotation	= mesh.rotation();
+			var position	= character3D.position();
+			var rotation	= character3D.rotation();
 			gameServer.clientEcho({
 				type	: 'positionChange',
 				position: { x : position.x, y : position.y, z : position.z },
@@ -366,11 +369,13 @@ require([
 		var character	= tQuery.createMinecraftChar({
 			skinUrl	: skinUrl
 		}).addTo(world);
-		tQuery('mesh', character.object3D('root')).castShadow(true)
+		var character3D	= character.object3D('root');
+		tQuery('mesh', character3D).castShadow(true)
 		// store it
 		players[sourceId].character	= character;
 		// add a nickname cartouche
-		tQuery.createSprite().addTo(character.object3D('root'))	.addClass('cartouche')
+		tQuery.createSprite().addTo(character3D)
+			.addClass('cartouche')
 			.scaleBy(1/200).positionY(1.1)
 			.map(buildNickCartouche(userInfo.nickName))
 		// add a sword to his arm
@@ -396,9 +401,9 @@ require([
 	}
 	function destroyPlayer(sourceId){
 		var player	= players[sourceId];
-		player.character.removeFrom(world)
-		player.bodyAnims.stop()
-		delete players[sourceId]		
+		player.character.removeFrom(world);
+		player.bodyAnims.stop();
+		delete players[sourceId];		
 	}
 	function updatePlayer(sourceId, curUserInfo, oldUserInfo){
 		console.assert(players[sourceId] !== undefined);

@@ -16,6 +16,54 @@ app.use(require('express').static(__dirname + '/'));
  * - userslist == { socket: , userInfo}
 */
 
+/**
+ * to store the rooms object
+ * @type {Object} key are the roomname and value are the server side of the room
+ */
+var rooms	= {};
+
+var roomJoin	= function(roomName, socket){
+	// create the room if needed
+	if( rooms[roomName] === undefined ){
+		var worldName	= roomName.split('/')[0];
+		var filepath	= './public/worlds/'+worldName+'/room';
+		var RoomClass	= require(filepath);
+		rooms[roomName]	= new RoomClass(roomName);
+	}
+	// get the room
+	var room	= rooms[roomName];
+	// add the socket
+	room.addSocket(socket)
+	// return the room
+	return room;
+}
+
+var roomLeave	= function(roomName, socket){
+	// get the room
+	var room	= rooms[roomName];
+	console.assert( room !== undefined );
+	// remove the socket
+	room.removeSocket(socket);
+	// destroy the room if empty
+	if( room.countSockets() === 0 ){
+		room.destroy();
+		delete rooms[roomName];
+	}
+}
+
+/**
+ * update each rooms
+ * 
+ * @param  {Number} delta seconds since last update
+ * @param  {Number} now   seconds since the begining of time
+ */
+ */
+var roomUpdate	= function(delta, now){
+	rooms.forEach(function(room){
+		room.update(delta, now)
+	});
+}
+
 var io		= require('socket.io').listen(server);
 io.set('log level', 2);
 io.sockets.on('connection', function(socket){
@@ -36,6 +84,11 @@ io.sockets.on('connection', function(socket){
 		};
 		// join the room
 		socket.join(roomName);
+		
+		roomJoin(roomName, socket);
+		
+		
+		
 		// acknowledge the join to the sender
 		var usersInfo	= {};
 		io.sockets.clients(roomName).forEach(function(client){
@@ -70,6 +123,8 @@ io.sockets.on('connection', function(socket){
 			sourceId	: sourceId,
 			reason		: 'disconnect'
 		});
+		
+		roomLeave(roomName, socket);
 	})
 	
 	//////////////////////////////////////////////////////////////////////////
