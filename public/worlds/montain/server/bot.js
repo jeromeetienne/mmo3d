@@ -50,17 +50,37 @@ Bot.prototype.userInfo = function() {
 //////////////////////////////////////////////////////////////////////////////////
 
 Bot.prototype.update = function(delta, now) {
-	//console.log('update bot', this._userInfo.nickName)
-	//
 	var angle	= 0.2 * now * Math.PI * 2;
 	this._positionChange.position.x	= 2.0 * Math.cos(angle);
 	this._positionChange.position.y	= 0.2 * Math.abs(Math.cos(4*angle));
 	this._positionChange.position.z	= 2.0 * Math.sin(angle);
-	this._positionChange.rotation.y	= -(Math.PI-(- angle - Math.PI));
+	this._positionChange.rotation.y	= -angle;
 
 	this._room.emit('clientEcho', {
 		sourceId	: this._sourceId,
 		message		: this._positionChange
+	});
+	
+	if( Math.random() < 1/100 ){
+		var sentences	= [
+			'I am me! Are you you?',
+			'I gonna kick your ass!',
+			'Chuck Noris beats elvis anyday!',
+			'I need love :('
+		];
+		var idx		= Math.floor(Math.random() * sentences.length);
+		var sentence	= sentences[idx];
+		this.say(sentence);
+	}
+};
+
+Bot.prototype.say = function(text){
+	this._room.emit('clientEcho', {
+		sourceId	: this._sourceId,
+		message		: {
+			type	: 'chatText',
+			text	: text
+		}
 	});
 };
 

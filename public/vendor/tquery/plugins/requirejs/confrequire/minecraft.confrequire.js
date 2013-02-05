@@ -9,12 +9,20 @@ requirejs.config({
 			'plugins/minecraft/tquery.midikeytween',
 			'plugins/minecraft/tquery.minecraftchar',
 			'plugins/minecraft/tquery.minecraftchar.keyboard2',
+			'tquery.keyboard',
 			'plugins/minecraft/tquery.camerafpscontrols',
-			'plugins/minecraft/tquery.animation',
-			'plugins/minecraft/tquery.animations',
 			'plugins/minecraft/tquery.spritesheet',
 			'plugins/minecraft/tquery.minecraftcharanimations',
 			'plugins/minecraft/tquery.minecraftcharheadanimations',
+		],
+		'plugins/minecraft/tquery.minecraftcharanimations'	: [
+			'plugins/minecraft/tquery.animations'
+		],
+		'plugins/minecraft/tquery.minecraftcharheadanimations'	: [
+			'plugins/minecraft/tquery.animations'
+		],
+		'plugins/minecraft/tquery.animations'	: [
+			'plugins/minecraft/tquery.animation'
 		]
 	}
 });
