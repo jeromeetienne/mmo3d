@@ -2,7 +2,6 @@
 <script src="../../vendor/tquery/build/tquery-bundle-require.js"></script>
 
 <script src="../../vendor/webaudio-bundle.js"></script>
-
 <script>
 // Load simplemmoserver - depends on localhost or inet hosting
 (function(){ 
@@ -52,18 +51,23 @@ requirejs.config({
 		'three.js'	: '../../vendor/three.js',
 	},
 });
+var yeller	= {};
 require([
 	  'tquery.pproc'
-	, 'tquery.skymap'
-	, 'tquery.keyboard'
-	, 'tquery.grassground'
-	, 'tquery.light', 'tquery.minecraft'
-	, 'tquery.montainarena'
-	, 'tquery.text'], function(){
+
+	, 'scene-light'
+	, 'scene-ground'
+	, 'character'
+	, 'player'
+	], function(){
 	var world	= tQuery.createWorld().start().boilerplate({
 		fullscreen	: false,
 		screenshot	: false
 	});
+	
+	// setup yeller
+	tQuery.MicroeventMixin(yeller);
+
 
 	// enable shaddow in the renderer
 	world.tRenderer().shadowMapEnabled	= true;
@@ -86,81 +90,34 @@ require([
 	// add post processing
 	world.addEffectComposer().vignette().finish();		
 
-	// add a skybox
-	var textureUrls	= tQuery.TextureCube.createUrls('skybox', '.jpg', '../../vendor/tquery/plugins/assets/images/textures/cube');
-	var textureCube	= tQuery.createCubeTexture(textureUrls);
-	tQuery.createSkymap({
-		textureCube	: textureCube
-	}).addTo(world);
-
-	if( true ){
-		// create the text
-		var text	= tQuery.createText(roomName, {
-			bevelThickness	: 0.1,
-			bevelSize	: 0.03,
-			bevelEnabled	: true,
-		}).addTo(world).scaleBy(1/2).translateY(0.5)
-			.setLambertMaterial({
-				ambient	: 0x444444,
-				color	: 0x888888,
-				envMap	: textureCube
-			}).back()
-			.castShadow(true)
-		world.loop().hook(function(delta, now){
-			var deltaAngle	= 0.05 * delta * Math.PI * 2;
-			text.rotateY(deltaAngle)
-		})
-	}
-
-	// create ground
-	if( true ){
-		var ground	= tQuery.createGrassGround({
-			textureRepeatX	: 20,
-			textureRepeatY	: 20,
-		}).addTo(world)
-			.receiveShadow(true)
-			.scale(40)
-		// TODO to merge all the montains
-		tQuery.MontainArena.createBasicArena().addTo(world)
-			.scale(40)
-	}
-
-	// initiate a spritesheet
-	var items	= new tQuery.Spritesheet({
-		url	: '../../vendor/tquery/plugins/minecraft/examples/images/items/items.png',
-		imgW	: 256,
-		imgH	: 256,
-		spriteW	: 16,
-		spriteH	: 16
+	var sceneGround	= new SceneGround({
+		roomName	: roomName
 	});
 
 	//////////////////////////////////////////////////////////////////////////
 	//		lights							//
 	//////////////////////////////////////////////////////////////////////////
-	tQuery.createAmbientLight().addTo(world)
-		.color(0xFFFFFF);
-	tQuery.createDirectionalLight().addTo(world)
-		.position(1,1,-1).color(0xffffff).intensity(2);
-	var light	= tQuery.createDirectionalLight().addTo(world)
-		.position(-1, 2, 3)
-		.color(0xffffff).intensity(4)
-		.castShadow(true)
-		.shadowDarkness(0.4)
-		.shadowMap(512*2,512*2)
-		.shadowCamera(8, -8, 8, -8, 0.1, 10)
-		//.shadowCameraVisible(true)
+	var sceneLights	= new SceneLights()
+	
 
-	// for light to follow character
+	// emit playerMove
 	world.loop().hook(function(){
 		if( !players[mySourceId] )	return;
 		var player	= players[mySourceId];
 		var model	= player.character.object3D('root');
-		light.get(0).target.position.copy(model.position());
-
-		var delta	= tQuery.createVector3(-1,2,3);
-		var position	= model.position().clone().addSelf(delta);
-		light.position(position)
+		yeller.dispatchEvent('playerMove', model.position(), model.rotation());
 	});
+
+
+window.john	= new Player({
+//window.john	= new Character({
+		sourceId: 'qwerty',
+		userInfo: {
+			nickName	: 'jetienne',
+			skinBasename	: 'char.png',
+		}
+	});
+window.john.object3D().translateX(2)
 
 	//////////////////////////////////////////////////////////////////////////
 	//		network							//
@@ -210,7 +167,9 @@ require([
 	gameServer.addEventListener('clientEcho', function(data){
 		// TODO why is this needed
 		if( !players[data.sourceId] )	return;
-		console.assert( players[data.sourceId], 'clientEcho to unkown player '+data.sourceId );
+		console.assert( players[data.sourceId], 'clientEcho to unknown player '+data.sourceId );
+		// yell this
+		//yeller.dispatchEvent(data.message.type'.'+data.sourceId, data)
 		// handle message by data.message.type
 		if( data.message.type === 'positionChange' ){
 			if( data.sourceId === mySourceId )	return;
@@ -381,15 +340,6 @@ require([
 			.addClass('cartouche')
 			.scaleBy(1/200).positionY(1.1)
 			.map(buildNickCartouche(userInfo.nickName))
-		// add a sword to his arm
-// TODO Make it such as it work even if texture nore loaded ?
-		// var sword	= items.createMesh(2, 4)
-		// 	.addTo(character.parts.armR)
-		// 	.scaleBy(1/2)
-		// 	.position(0,-10/35,8/35)
-		// 	.rotation(Math.PI/2,Math.PI/2,Math.PI/4)
-		// 	.castShadow(true)
-
 		// init bodyAnims
 		var bodyAnims	= new tQuery.MinecraftCharAnimations(character);
 		bodyAnims.start('run');

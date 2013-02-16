@@ -2,7 +2,7 @@ var Bot	= function(room){
 	this._room	= room;
 	this._sourceId	= 'botClientID-'+Math.floor(Math.random()*10000).toString(16);
 	this._userInfo	= {
-		nickName	: 'Jumper-'+Math.floor(Math.random()*100).toString(16),
+		nickName	: 'Jumpy-'+Math.floor(Math.random()*100).toString(16),
 		skinBasename	: 'char.png',
 	};
 
