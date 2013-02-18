@@ -104,20 +104,9 @@ require([
 	world.loop().hook(function(){
 		if( !players[mySourceId] )	return;
 		var player	= players[mySourceId];
-		var model	= player.character.object3D('root');
+		 var model	= player.character.object3D('root');
 		yeller.dispatchEvent('playerMove', model.position(), model.rotation());
 	});
-
-
-window.john	= new Player({
-//window.john	= new Character({
-		sourceId: 'qwerty',
-		userInfo: {
-			nickName	: 'jetienne',
-			skinBasename	: 'char.png',
-		}
-	});
-window.john.object3D().translateX(2)
 
 	//////////////////////////////////////////////////////////////////////////
 	//		network							//

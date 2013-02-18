@@ -24,6 +24,8 @@ var Character	= function(opts){
 	}).addTo(opts.world);
 	var character3D	= this._character.object3D('root');
 	tQuery('mesh', character3D).castShadow(true)
+	// add a class
+	character3D.addClass('character')
 	// add a nickname cartouche
 	var canvas	= this._buildNickCartouche(this._userInfo.nickName);
 	tQuery.createSprite().addTo(character3D)
@@ -39,9 +41,9 @@ var Character	= function(opts){
 	
 	
 	// update this._bodyAnim depending on velocity
-	var prevRotation	= tQuery.createVector3();
-	var prevPosition	= tQuery.createVector3();
-	setInterval(function(){
+	var prevRotation= tQuery.createVector3();
+	var prevPosition= tQuery.createVector3();
+	this._timerId	= setInterval(function(){
 		// compute player velocity
 		var velocity	= character3D.position().clone().subSelf(prevPosition);
 		// set bodyAnim according to velocity value
@@ -54,10 +56,10 @@ var Character	= function(opts){
 };
 
 Character.prototype.destroy = function() {
-	var character3D	= this._character.object3D('root');
-	character3D.detach();
+	this.object3D().detach();
 	this._bodyAnims.stop();
 	this._headAnims.stop();
+	// TODO stop timer
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +74,14 @@ Character.prototype.object3D = function(){
 Character.prototype.userInfo = function(){
 	var userInfo	= this._userInfo
 	return userInfo;
+};
+
+/**
+ * getter for sourceId
+ * @return {String} opaque string which identify this character
+ */
+Character.prototype.sourceId = function() {
+	return this._sourceId;
 };
 
 Character.prototype.nickName = function(value){

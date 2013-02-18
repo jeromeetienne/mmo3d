@@ -17,10 +17,14 @@ var Player	= function(opts){
 	var world	= opts.world;	
 	var character3D	= this.object3D();
 	
+	character3D.addClass('player')
+	
 	// to enable a tracking camera
 	var cameraControls	= tQuery.createCameraFpsControls({
 		trackedObject	: character3D.get(0),
 		tCamera		: world.tCamera(),
+		deltaCamera	: tQuery.createVector3(0, 1.5, -3).setLength(3),
+
 	});
 	world.setCameraControls(cameraControls)
 	//cameraControls.deltaCamera().position(0, 0.7, -0.07)
@@ -41,6 +45,12 @@ var Player	= function(opts){
 			position.setLength(maxLength)				
 		}
 	});
+	
+	// emit playerMove to yeller
+	world.loop().hook(function(){
+		yeller.dispatchEvent('playerMove', character3D);
+	});
+
 };
 
 Player.prototype.destroy = function() {

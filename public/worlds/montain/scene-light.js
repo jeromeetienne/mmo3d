@@ -18,20 +18,25 @@ var SceneLights	= function(opts){
 	tQuery.createAmbientLight().addTo(world)
 		.color(0xFFFFFF);
 	tQuery.createDirectionalLight().addTo(world)
-		.position(1,1,-1).color(0xffffff).intensity(2);
+		.position(1,1,-1)
+		.color(0xffffff)
+		.intensity(2);
 	var light	= tQuery.createDirectionalLight().addTo(world)
 		.position(-1, 2, 3)
-		.color(0xffffff).intensity(4)
+		.color(0xffffff)
+		.intensity(4)
 		.castShadow(true)
 		.shadowDarkness(0.4)
 		.shadowMap(512*2,512*2)
 		.shadowCamera(8, -8, 8, -8, 0.1, 10)
 		//.shadowCameraVisible(true)
 
-	yeller.addEventListener('playerMove', function(position, rotation){
-		var delta	= tQuery.createVector3(-1,2,3);
-		var position	= position.clone().addSelf(delta);
+	yeller.addEventListener('playerMove', function(character3D){
+		var delta	= tQuery.createVector3(-1,2,3).setLength(5);
+		var target	= tQuery(light.get(0).target)
+		var position	= character3D.position().clone().addSelf(delta);
 		light.position(position);
+		target.position(character3D.position())
 	}.bind(this))	
 }
 
