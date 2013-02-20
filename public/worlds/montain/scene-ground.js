@@ -4,7 +4,7 @@ define( [ 'tquery.skymap'
 	, 'tquery.grassground'
 	, 'tquery.montainarena'
 	, 'tquery.text'
-	], function(){
+], function(){
 //////////////////////////////////////////////////////////////////////////////////
 
 /**

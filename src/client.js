@@ -17,27 +17,25 @@ var SimpleMMOServer	= function(roomName, userInfo, serverUrl){
 	});
 
 	socket.on('roomJoined', function(data){
-		console.log('roomJoined', data)
+		//console.log('roomJoined', data)
 		console.assert(this._sourceId === null)
 		this._sourceId	= data.sourceId;
 		this._usersInfo	= data.usersInfo;
 		this.dispatchEvent('roomJoined', this._sourceId, this._usersInfo);		
 	}.bind(this));
-	
-
 
 	socket.on('connect', function(data){
-		console.log('event connect')
+		//console.log('event connect')
 	});
 
 	
 	socket.on('disconnect', function(socket){
-		console.log('event disconnect')
+		//console.log('event disconnect')
 	}.bind(this))
 
 	// listen on user info
 	socket.on('userInfo', function(data){
-		console.log('received userInfo', JSON.stringify(data, null, '\t'))
+		//console.log('received userInfo', JSON.stringify(data, null, '\t'))
 		// 
 		var oldUserInfo	= this._usersInfo[data.sourceId]
 		// test if it is a new user
@@ -54,7 +52,7 @@ var SimpleMMOServer	= function(roomName, userInfo, serverUrl){
 
 	// listen on userLeft
 	socket.on('userLeft', function(data){
-		console.log('received userLeft ', JSON.stringify(data, null, '\t'));
+		//console.log('received userLeft ', JSON.stringify(data, null, '\t'));
 
 		var userInfo	= this._usersInfo[data.sourceId];
 		delete this._usersInfo[data.sourceId]

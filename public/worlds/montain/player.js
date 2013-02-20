@@ -7,14 +7,17 @@ define( [ 'tquery.keyboard'
 
 
 var Player	= function(opts){
-	// handle default values
-	this._opts	= opts	= tQuery.extend(opts, {
-		world	: tQuery.world
-	});
 	// call parent
 	Character.call(this, opts);
+	// handle default values
+	opts	= tQuery.extend(opts, {
+		world	: tQuery.world,
+	});
+	// sanity check
+	console.assert( opts.gameServer );
 
-	var world	= opts.world;	
+	var world	= opts.world;
+	this._gameServer= opts.gameServer;
 	var character3D	= this.object3D();
 	
 	character3D.addClass('player')
@@ -27,13 +30,12 @@ var Player	= function(opts){
 
 	});
 	world.setCameraControls(cameraControls)
-	//cameraControls.deltaCamera().position(0, 0.7, -0.07)
 
 	//////////////////////////////////////////////////////////////////////////
 	// user controls on keyboard						//
 	//////////////////////////////////////////////////////////////////////////
 	tQuery.createMinecraftCharKeyboard2({
-		object3D	: character3D.get(0),
+		object3D	: character3D,
 		lateralMove	: 'rotationY',
 	});
 	
@@ -50,15 +52,59 @@ var Player	= function(opts){
 	world.loop().hook(function(){
 		yeller.dispatchEvent('playerMove', character3D);
 	});
-
 };
 
+/**
+ * destructor
+ */
 Player.prototype.destroy = function() {
 };
 
 Player.prototype = Object.create( Character.prototype );
 
+/**
+ * make it say something
+ * @param  {string} text the text to say
+ */
+Player.prototype.say = function(text){
+	// call parent function
+	Character.prototype.say.apply(this, arguments)
+	// send it to the server
+	gameServer.clientBroadcast({
+		type	: 'chatText',
+		text	: text,
+	});
+};
 
+/**
+ * getter/setter for userInfo's nickName
+ * @param  {string|undefined} value 
+ */
+Player.prototype.nickName = function(value){
+	if( value === undefined ){
+		return Character.prototype.nickName.apply(this, arguments)		
+	}
+	// call parent function
+	Character.prototype.nickName.apply(this, arguments)
+	// send it to the server
+	var userInfo	= this.userInfo();
+	gameServer.userInfo( userInfo );
+};
+
+/**
+ * getter/setter for userInfo's skinBasename
+ * @param  {string|undefined} value 
+ */
+Player.prototype.skinBasename = function(value){
+	if( value === undefined ){
+		return Character.prototype.skinBasename.apply(this, arguments)		
+	}
+	// call parent function
+	Character.prototype.skinBasename.apply(this, arguments)
+	// send it to the server
+	var userInfo	= this.userInfo();
+	gameServer.userInfo( userInfo );
+};
 
 //////////////////////////////////////////////////////////////////////////////////
 // require.js module definition END

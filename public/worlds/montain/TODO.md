@@ -1,3 +1,8 @@
+
+### TODO should that be there ?
+- localplayer.js - baseplayer.js
+- alienplayer.js - baseplayer.js
+
 ### schedule
 * start another world
 

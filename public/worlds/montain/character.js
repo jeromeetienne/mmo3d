@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 // require.js module definition
-define( [ 'tquery.minecraft'
+define( [  'tquery.minecraft'
 ], function(){
 //////////////////////////////////////////////////////////////////////////////////
 	
@@ -8,7 +8,7 @@ define( [ 'tquery.minecraft'
 var Character	= function(opts){
 	// handle default values
 	this._opts	= opts	= tQuery.extend(opts, {
-		world	: tQuery.world
+		world		: tQuery.world
 	});
 	// handle parameter check
 	console.assert(opts.sourceId)
@@ -38,8 +38,7 @@ var Character	= function(opts){
 	// init headAnims
 	this._headAnims	= new tQuery.MinecraftCharHeadAnimations(this._character);
 	this._headAnims.start('still');
-	
-	
+
 	// update this._bodyAnim depending on velocity
 	var prevRotation= tQuery.createVector3();
 	var prevPosition= tQuery.createVector3();
@@ -53,13 +52,40 @@ var Character	= function(opts){
 		prevPosition.copy( character3D.position() )
 		prevRotation.copy( character3D.rotation() )
 	}.bind(this), 1000/5);	// Important to be less than framerate - thus you dont misdetect still 
+
+	yeller.addEventListener('clientBroadcast.positionChange.'+this._sourceId, function(data){
+		var message	= data.message;
+		var position	= message.position;
+		var rotation	= message.rotation;
+		character3D.positionX( position.x )
+		character3D.positionY( position.y )
+		character3D.positionZ( position.z )
+		character3D.rotationX( rotation.x )
+		character3D.rotationY( rotation.y )
+		character3D.rotationZ( rotation.z )
+	}.bind(this));
+
+	yeller.addEventListener('clientBroadcast.chatText.'+this._sourceId, function(data){
+		var message	= data.message;
+		var text	= message.text;
+		this.say(text);
+	}.bind(this));
+
+	yeller.addEventListener('userInfo.update.'+this._sourceId, function(curUserInfo){
+		if( curUserInfo.skinBasename !== this._userInfo.skinBasename ){
+			this.skinBasename(curUserInfo.skinBasename)
+		}
+		if( curUserInfo.nickName !== this._userInfo.nickName ){
+			this.nickName(curUserInfo.nickName)
+		}
+	}.bind(this));
 };
 
 Character.prototype.destroy = function() {
 	this.object3D().detach();
 	this._bodyAnims.stop();
 	this._headAnims.stop();
-	// TODO stop timer
+	clearInterval(this._timerId)
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +122,7 @@ Character.prototype.nickName = function(value){
 	texture.image	= this._buildNickCartouche(userInfo.nickName)
 	texture.needsUpdate	= true;
 	// TODO reenable sound
-	// sounds.nickChange	&& sounds.nickChange.play()
+	sounds.nickChange	&& sounds.nickChange.play()
 };
 
 Character.prototype.skinBasename = function(value){
@@ -108,20 +134,9 @@ Character.prototype.skinBasename = function(value){
 
 	var skinUrl	= '../../vendor/tquery/plugins/minecraft/examples/images/'+userInfo.skinBasename;
 	this._character.loadSkin(skinUrl)
-	// TODO reenable sound
-	// sounds.skinChange	&& sounds.skinChange.play()
+	// play sound
+	sounds.skinChange	&& sounds.skinChange.play()
 };
-
-Character.prototype.updateUserInfo	= function(sourceId, curUserInfo, oldUserInfo){
-	// update the skin if needed
-	if( !oldUserInfo || curUserInfo.skinBasename !== oldUserInfo.skinBasename ){
-		this.skinBasename(curUserInfo.skinBasename)
-	}
-	// update the nickname cartouche if needed
-	if( !oldUserInfo || curUserInfo.nickName !== oldUserInfo.nickName ){
-		this.nickName(curUserInfo.nickName)
-	}
-}
 
 Character.prototype.say = function(text){
 	var character3D	= this.object3D();
@@ -138,6 +153,8 @@ Character.prototype.say = function(text){
 	setTimeout(function(){
 		sprite.detach();
 	}, 10*1000);
+	// play sound
+	sounds.chatReceived	&& sounds.chatReceived.play()
 };
 
 //////////////////////////////////////////////////////////////////////////////////

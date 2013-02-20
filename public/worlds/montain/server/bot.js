@@ -56,7 +56,7 @@ Bot.prototype.update = function(delta, now) {
 	this._positionChange.position.z	= 2.0 * Math.sin(angle);
 	this._positionChange.rotation.y	= -angle;
 
-	this._room.emit('clientEcho', {
+	this._room.emit('clientBroadcast', {
 		sourceId	: this._sourceId,
 		message		: this._positionChange
 	});
@@ -75,7 +75,7 @@ Bot.prototype.update = function(delta, now) {
 };
 
 Bot.prototype.say = function(text){
-	this._room.emit('clientEcho', {
+	this._room.emit('clientBroadcast', {
 		sourceId	: this._sourceId,
 		message		: {
 			type	: 'chatText',
