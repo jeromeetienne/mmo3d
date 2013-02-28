@@ -20,9 +20,9 @@ var PageUI	= function(){
 	nicknameForm.addEventListener('submit', function(){
 		// dispatch event with new value
 		var nickName	= nicknameForm[0].value;
-		this.dispatchEvent('nickNameChange', nickName)
+		this.dispatchEvent('nickNameChange', nickName);
 		// put back the focus on body
-		document.body.focus();		
+		document.body.focus();
 	}.bind(this));
 
 	// handle skinSelection

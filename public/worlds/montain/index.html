@@ -62,7 +62,6 @@ require([
 	// setup yeller
 	tQuery.MicroeventMixin(yeller);
 
-
 	// enable shaddow in the renderer
 	// TODO change to tQuery.shaddowmap plugins
 	world.tRenderer().shadowMapEnabled	= true;
@@ -76,7 +75,6 @@ require([
 		sounds.userJoin		= tQuery.createSound().load('../../sounds/gearwhine.wav');
 		sounds.userLeft		= tQuery.createSound().load('../../sounds/gearwhine.wav');
 	}
-
 
 	// determine roomName
 	var location	= window.location
@@ -181,7 +179,6 @@ require([
 	gameServer.addEventListener('clientEcho', function(data){
 		yeller.dispatchEvent('clientEcho.'+data.message.type+'.'+data.sourceId, data)
 	});
-
 	gameServer.addEventListener('clientBroadcast', function(data){
 		yeller.dispatchEvent('clientBroadcast.'+data.message.type+'.'+data.sourceId, data)
 	});
@@ -193,15 +190,16 @@ require([
 	//////////////////////////////////////////////////////////////////////////
 	//		PageUI							//
 	//////////////////////////////////////////////////////////////////////////
-
 	var pageUI	= new PageUI();
-	pageUI.roomName(roomName).nickName(gameServer.userInfo().nickName)
+	pageUI.roomName(roomName)
+		.nickName(gameServer.userInfo().nickName);
+	
 	pageUI.addEventListener('skinBasenameChange', function(value){
 		player.skinBasename(value)
 	})
 	pageUI.addEventListener('nickNameChange', function(value){
 		player.nickName(value)
-	})	
+	})
 	pageUI.addEventListener('say', function(value){
 		player.say(value)
 	})
