@@ -1,0 +1,207 @@
+<!doctype html><title>Chat and fight</title>
+<script src="../../vendor/tquery/build/tquery-bundle-require.js"></script>
+<script src="../../vendor/webaudio-bundle.js"></script>
+<script src="../../../socket.io/socket.io.js"></script>
+<script src="../../../src/client.js"></script>
+<body><div style="position: absolute; font-size: 200%; right: 1em; top: 0.5em; z-index: 1; text-align: right;">
+	<form action="javascript:void(0)" id='nicknameForm' style='display: inline-block'>
+		<input type="text"/>
+	</form>
+	<span style='font-size: 50%; font-weight: bolder;'>in room</span>
+	<form action="javascript:void(0)" id='roomNameForm' style='display: inline-block'>
+		<input type="text"/>
+	</form>
+	<span style='font-size: 50%; font-weight: bolder;'>dressed as</span>
+	<select id="skinSelect">
+		<option value="char.png">char</option>
+		<option value="3djesus.png">3djesus</option>
+		<option value="agentsmith.png">agentsmith</option>
+		<option value="batman.png">batman</option>
+		<option value="god.png">god</option>
+		<option value="Joker.png">Joker</option>
+		<option value="Mario.png">Mario</option>
+		<option value="martialartist.png">martialartist</option>
+		<option value="robocop.png">robocop</option>
+		<option value="Sonicthehedgehog.png">Sonic the hedgehog</option>
+		<option value="Spiderman.png">Spiderman</option>
+		<option value="Superman.png">Superman</option>
+		<option value="theflash.png">theflash</option>
+		<option value="woody.png">woody</option>
+		<option value="Iron-Man-Minecraft-Skin.png">ironman</option>
+	</select>
+	<form action="javascript:void(0)" id='chatInputForm'>
+		<input size=104 type="text" placeholder='Chat here'/>
+	</form>
+</div><script>
+requirejs.config({
+	paths	: {
+		"build"		: "../../vendor/tquery/build",
+		"plugins"	: "../../vendor/tquery/plugins",
+		'threex'	: '../../vendor/threex',
+		'three.js'	: '../../vendor/three.js',
+	},
+});
+var yeller	= {};
+var sounds	= {};
+var gameServer	= null;
+var worldName	= 'montain';
+require([
+	  'tquery.pproc'
+
+	, 'scene-light'
+	, 'scene-ground'
+	, 'character'
+	, 'player'
+	, 'pageUI'
+], function(){
+	var world	= tQuery.createWorld().start().boilerplate({
+		fullscreen	: false,
+		screenshot	: false
+	});
+
+	// setup yeller
+	tQuery.MicroeventMixin(yeller);
+
+	// enable shaddow in the renderer
+	// TODO change to tQuery.shaddowmap plugins
+	world.tRenderer().shadowMapEnabled	= true;
+
+	// enable sound
+	if( WebAudio.isAvailable ){
+		world.enableWebAudio();
+		sounds.chatReceived	= tQuery.createSound().load('../../sounds/checkpoint.wav');
+		sounds.skinChange	= tQuery.createSound().load('../../sounds/eatpill.mp3');
+		sounds.nickChange	= tQuery.createSound().load('../../sounds/gearwhine.wav');
+		sounds.userJoin		= tQuery.createSound().load('../../sounds/gearwhine.wav');
+		sounds.userLeft		= tQuery.createSound().load('../../sounds/gearwhine.wav');
+	}
+
+	// determine roomName
+	var location	= window.location
+	location.hash	= location.hash	|| 'Arena';
+	var roomName	= location.hash.slice(1);
+
+
+	//////////////////////////////////////////////////////////////////////////
+	//		Scene							//
+	//////////////////////////////////////////////////////////////////////////
+	var sceneGround	= new SceneGround({
+		roomName	: roomName
+	});
+
+	//////////////////////////////////////////////////////////////////////////
+	//		lights							//
+	//////////////////////////////////////////////////////////////////////////
+	var sceneLights	= new SceneLights()
+	
+	//////////////////////////////////////////////////////////////////////////
+	//		player							//
+	//////////////////////////////////////////////////////////////////////////
+	// create player
+	var player	= null;
+	var characters	= {};
+
+	//////////////////////////////////////////////////////////////////////////
+	//		player							//
+	//////////////////////////////////////////////////////////////////////////
+	// initiate connect with server
+	gameServer	= new SimpleMMOServer(worldName+'/'+roomName, {
+		nickName	: 'Player-'+Math.floor(Math.random()*10000).toString(16),
+		skinBasename	: 'char.png',
+	});
+
+	gameServer.addEventListener('roomJoined', function(sourceId, usersInfo){
+		// console.log('roomJoined', sourceId, usersInfo, gameServer.usersInfo())
+		// create the player
+		player	= new Player({
+			sourceId	: sourceId,
+			userInfo	: gameServer.userInfo(),
+			gameServer	: gameServer,
+		});
+		characters[sourceId]	= player;
+		// create all the others characters present in the room
+		// TODO fix issue with initial cootrdinate
+		Object.keys(usersInfo).forEach(function(sourceId){
+			if( sourceId === player.sourceId() )	return;
+			var userInfo	= usersInfo[sourceId];
+			// create the character
+			var character	= new Character({
+				sourceId	: sourceId,
+				userInfo	: userInfo
+			});
+			// add the character to other characters
+			console.assert(characters[sourceId] === undefined)
+			characters[sourceId]	= character;
+		});
+		// periodically send the position of the character
+		// - NOTE: not done on requestAnimationFrame as it has to be done even if page isnt visible
+		setInterval(function(){
+			var character3D	= player.object3D();
+			var position	= character3D.position();
+			var rotation	= character3D.rotation();
+			gameServer.clientBroadcast({
+				type	: 'positionChange',
+				position: { x : position.x, y : position.y, z : position.z },
+				rotation: { x : rotation.x, y : rotation.y, z : rotation.z },
+			});
+		}, 1000/60);
+	});
+	
+	gameServer.addEventListener('userJoin', function(data){
+		console.log('userJoin', arguments)
+		// create the character
+		var sourceId	= data.sourceId;
+		var userInfo	= data.userInfo;
+		var character	= new Character({
+			sourceId	: sourceId,
+			userInfo	: userInfo
+		});
+		// add the character to other characters
+		console.assert(characters[sourceId] === undefined)
+		characters[sourceId]	= character;
+		// play sound
+		sounds.userJoin	&& sounds.userJoin.play()
+	});
+
+	gameServer.addEventListener('userLeft', function(data){
+		console.log('userLeft', data)
+		// add some alias
+		var sourceId	= data.sourceId;
+		var character	= characters[sourceId];
+		// stop this player
+		character.destroy();
+		// remove it from the list
+		delete characters[sourceId];		
+		// play sound
+		sounds.userLeft	&& sounds.userLeft.play()
+	});
+	
+	gameServer.addEventListener('clientEcho', function(data){
+		yeller.dispatchEvent('clientEcho.'+data.message.type+'.'+data.sourceId, data)
+	});
+	gameServer.addEventListener('clientBroadcast', function(data){
+		yeller.dispatchEvent('clientBroadcast.'+data.message.type+'.'+data.sourceId, data)
+	});
+	gameServer.addEventListener('userInfo', function(sourceId, curUserInfo, oldUserInfo){
+		yeller.dispatchEvent('userInfo.update.'+sourceId, curUserInfo, oldUserInfo)
+	});
+
+
+	//////////////////////////////////////////////////////////////////////////
+	//		PageUI							//
+	//////////////////////////////////////////////////////////////////////////
+	var pageUI	= new PageUI();
+	pageUI.roomName(roomName)
+		.nickName(gameServer.userInfo().nickName);
+	
+	pageUI.addEventListener('skinBasenameChange', function(value){
+		player.skinBasename(value)
+	})
+	pageUI.addEventListener('nickNameChange', function(value){
+		player.nickName(value)
+	})
+	pageUI.addEventListener('say', function(value){
+		player.say(value)
+	})
+})
+</script></body>

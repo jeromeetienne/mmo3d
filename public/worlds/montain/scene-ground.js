@@ -4,6 +4,7 @@ define( [ 'tquery.skymap'
 	, 'tquery.grassground'
 	, 'tquery.montainarena'
 	, 'tquery.text'
+	, 'tquery.checkerboard'
 ], function(){
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -20,14 +21,16 @@ var SceneGround	= function(opts){
 	var world	= opts.world;
 	
 	// add a skybox
-	var textureUrls	= tQuery.TextureCube.createUrls('skybox', '.jpg', '../../vendor/tquery/plugins/assets/images/textures/cube');
-	var textureCube	= tQuery.createCubeTexture(textureUrls);
-	tQuery.createSkymap({
-		textureCube	: textureCube
-	}).addTo(world);
-
 	if( true ){
-		// create the text
+		var textureUrls	= tQuery.TextureCube.createUrls('mars', '.jpg', '../../vendor/tquery/plugins/assets/images/textures/cube');
+		var textureCube	= tQuery.createCubeTexture(textureUrls);
+		tQuery.createSkymap({
+			textureCube	: textureCube
+		}).addTo(world);
+	}
+
+	// create the text
+	if( false ){
 		var text	= tQuery.createText(opts.roomName, {
 			bevelThickness	: 0.1,
 			bevelSize	: 0.03,
@@ -47,6 +50,15 @@ var SceneGround	= function(opts){
 
 	// create ground
 	if( true ){
+		tQuery.createCheckerboard({
+			segmentsW	: 20,
+			segmentsH	: 20
+		}).addTo(world).scaleBy(40)
+			.receiveShadow(true)
+	}
+
+	// create ground
+	if( false ){
 		var ground	= tQuery.createGrassGround({
 			textureRepeatX	: 20,
 			textureRepeatY	: 20,

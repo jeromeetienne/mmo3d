@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 // require.js module definition
-define( [ 'tquery.light'
+define( [ 'tquery.shadowmap'
 ], function(){
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -34,7 +34,7 @@ var SceneLights	= function(opts){
 	yeller.addEventListener('playerMove', function(character3D){
 		var delta	= tQuery.createVector3(-1,2,3).setLength(5);
 		var target	= tQuery(light.get(0).target)
-		var position	= character3D.position().clone().addSelf(delta);
+		var position	= character3D.position().clone().add(delta);
 		light.position(position);
 		target.position(character3D.position())
 	}.bind(this))	

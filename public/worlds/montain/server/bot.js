@@ -60,8 +60,15 @@ Bot.prototype.update = function(delta, now) {
 		sourceId	: this._sourceId,
 		message		: this._positionChange
 	});
+
+	if( Math.random() < 1/100 ){
+return		
+		var nickName	= 'Jumpy-'+Math.floor(Math.random()*100).toString(16);
+		this.nickName(nickName)
+	}
 	
 	if( Math.random() < 1/100 ){
+return		
 		var sentences	= [
 			'I am me! Are you you?',
 			'I gonna kick your ass!',
@@ -74,6 +81,11 @@ Bot.prototype.update = function(delta, now) {
 	}
 };
 
+
+//////////////////////////////////////////////////////////////////////////////////
+//										//
+//////////////////////////////////////////////////////////////////////////////////
+
 Bot.prototype.say = function(text){
 	this._room.emit('clientBroadcast', {
 		sourceId	: this._sourceId,
@@ -81,6 +93,30 @@ Bot.prototype.say = function(text){
 			type	: 'chatText',
 			text	: text
 		}
+	});
+};
+
+Bot.prototype.nickName = function(value){
+	// if it is a getter, return the value
+	if( value === undefined )	return this._userInfo.nickName;
+	// set the new value
+	this._userInfo.nickName	= value;
+	// send update
+	this._room.emit('userInfo', {
+		sourceId	: this._sourceId,
+		userInfo	: this._userInfo
+	});
+};
+
+Bot.prototype.skinBasename = function(value){
+	// if it is a getter, return the value
+	if( value === undefined )	return this._userInfo.skinBasename;
+	// set the new value
+	this._userInfo.skinBasename	= value;
+	// send update
+	this._room.emit('userInfo', {
+		sourceId	: this._sourceId,
+		userInfo	: this._userInfo
 	});
 };
 

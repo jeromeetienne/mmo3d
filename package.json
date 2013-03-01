@@ -1,10 +1,10 @@
 {
-  "name": "tquery-multiplayerserver",
+  "name": "chatandfight",
   "scripts": {
-    "start": "server.js"
+    "start": "src/server.js"
   },
-  "subdomain": "jetienne.tquery-multiplayerserver",
-  "version": "0.0.0-37",
+  "subdomain": "jetienne.chatandfight",
+  "version": "0.0.0-53",
   "engines": {
     "node": "0.8.x"
   },

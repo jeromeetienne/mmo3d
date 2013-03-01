@@ -30,8 +30,12 @@ var Character	= function(opts){
 	var canvas	= this._buildNickCartouche(this._userInfo.nickName);
 	tQuery.createSprite().addTo(character3D)
 		.addClass('cartouche')
-		.scaleBy(1/200).positionY(1.1)
-		.map(canvas)
+		.scaleBy(1.3)
+		.positionY(1.1)
+		.setSpriteMaterial()
+			.map(canvas)
+			.back()
+		
 	// init bodyAnims
 	this._bodyAnims	= new tQuery.MinecraftCharAnimations(this._character);
 	this._bodyAnims.start('run');
@@ -44,7 +48,7 @@ var Character	= function(opts){
 	var prevPosition= tQuery.createVector3();
 	this._timerId	= setInterval(function(){
 		// compute player velocity
-		var velocity	= character3D.position().clone().subSelf(prevPosition);
+		var velocity	= character3D.position().clone().sub(prevPosition);
 		// set bodyAnim according to velocity value
 		var animName	= velocity.length() ? 'run' : 'stand';
 		this._bodyAnims.start(animName);
@@ -118,7 +122,7 @@ Character.prototype.nickName = function(value){
 	userInfo.nickName	= value;
 
 	var character3D	= this._character.object3D('root');		
-	var texture	= tQuery('.cartouche', character3D).get(0).map;
+	var texture	= tQuery('.cartouche', character3D).get(0).material.map;
 	texture.image	= this._buildNickCartouche(userInfo.nickName)
 	texture.needsUpdate	= true;
 	// TODO reenable sound
@@ -145,9 +149,12 @@ Character.prototype.say = function(text){
 	// add text
 	var canvas	= this._buildChatBubble(text);
 	var sprite	= tQuery.createSprite().addTo(character3D)
-		.translateY(1.4).scaleBy(1/200)
+		.translateY(1.4).scaleBy(4)
 		.addClass('chatMessage')
-		.map(canvas)
+		.setSpriteMaterial()
+			.map(canvas)
+			.back()
+
 	// remove the text after a while
 	// TODO handle stopping this timer
 	setTimeout(function(){

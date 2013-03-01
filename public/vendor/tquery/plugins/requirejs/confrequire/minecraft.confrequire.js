@@ -22,7 +22,7 @@ requirejs.config({
 			'plugins/minecraft/tquery.animations'
 		],
 		'plugins/minecraft/tquery.animations'	: [
-			'plugins/minecraft/tquery.animation'
+			'plugins/minecraft/tquery.animation',
 		]
 	}
 });

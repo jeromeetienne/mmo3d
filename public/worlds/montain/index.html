@@ -1,9 +1,9 @@
 <!doctype html><title>Chat and fight</title>
-<script src="../../vendor/tquery/build/tquery-bundle-require.js"></script>
-<script src="../../vendor/webaudio-bundle.js"></script>
+<!-- socket.io MUST be before require.js, else require.js chokes on a 'anonymous define' in socket.io -->
 <script src="../../../socket.io/socket.io.js"></script>
+<script src="../../vendor/tquery/build/tquery-bundle-require.js"></script>
 <script src="../../../src/client.js"></script>
-<body><div style="position: absolute; font-size: 200%; right: 1em; top: 0.5em; z-index: 1; text-align: right;">
+<body><div style="position: absolute; font-size: 200%; right: 1em; bottom: 0.5em; z-index: 1; text-align: right;">
 	<form action="javascript:void(0)" id='nicknameForm' style='display: inline-block'>
 		<input type="text"/>
 	</form>
@@ -32,13 +32,21 @@
 	<form action="javascript:void(0)" id='chatInputForm'>
 		<input size=104 type="text" placeholder='Chat here'/>
 	</form>
+</div><div id="info" style="z-index: 2">
+	Chat and Fight by<a href='http://twitter.com/jerome_etienne' target='_blank'>@jerome_etienne</a>
+	<br/>
+	<a href='https://github.com/mrdoob/three.js/' target='_blank'>three.js</a> with
+	<a href='http://jeromeetienne.github.com/tquery/' target='_blank'>tQuery API</a> for 3D
+	-
+	<a href='http://jeromeetienne.github.com/webaudio.js/' target='_blank'>webaudio.js</a> for sound
+	- hosted on <a href='http://nodejitsu.com/' target='_blank'>nodejitsu</a>
 </div><script>
 requirejs.config({
 	paths	: {
-		"build"		: "../../vendor/tquery/build",
-		"plugins"	: "../../vendor/tquery/plugins",
-		'threex'	: '../../vendor/threex',
-		'three.js'	: '../../vendor/three.js',
+		"build"		: "/public/vendor/tquery/build",
+		"plugins"	: "/public/vendor/tquery/plugins",
+		'threex'	: '/public/vendor/tquery/vendor/threex',
+		'three.js'	: '/public/vendor/tquery/vendor/three.js',
 	},
 });
 var yeller	= {};
@@ -47,14 +55,15 @@ var gameServer	= null;
 var worldName	= 'montain';
 require([
 	  'tquery.pproc'
+	, 'tquery.webaudio'
 
 	, 'scene-light'
 	, 'scene-ground'
 	, 'character'
 	, 'player'
-	, 'pageUI'
+	, 'pageui'
 ], function(){
-	var world	= tQuery.createWorld().start().boilerplate({
+	var world	= tQuery.createWorld().start().pageTitle('#info').boilerplate({
 		fullscreen	: false,
 		screenshot	: false
 	});
@@ -63,8 +72,7 @@ require([
 	tQuery.MicroeventMixin(yeller);
 
 	// enable shaddow in the renderer
-	// TODO change to tQuery.shaddowmap plugins
-	world.tRenderer().shadowMapEnabled	= true;
+//	world.shadowMapEnabled(true);
 
 	// enable sound
 	if( WebAudio.isAvailable ){
@@ -78,7 +86,7 @@ require([
 
 	// determine roomName
 	var location	= window.location
-	location.hash	= location.hash	|| 'Arena';
+	location.hash	= location.hash	|| 'Public';
 	var roomName	= location.hash.slice(1);
 
 
@@ -204,4 +212,7 @@ require([
 		player.say(value)
 	})
 })
-</script></body>
+</script>
+<!-- github ribbon -->
+<a href="https://github.com/jeromeetienne/chatandfight" target='_blank'><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+</body>
