@@ -5,4 +5,4 @@ serverDev:
 	forever -w --watchDirectory . src/server.js 8000
 
 deploy:
-	yes | jitsu deploy
+	jitsu -c deploy

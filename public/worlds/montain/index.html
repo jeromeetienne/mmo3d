@@ -1,9 +1,9 @@
-<!doctype html><title>Chat and fight</title>
+<!doctype html><title>Chat and fight - multi player game in WebGL</title>
 <!-- socket.io MUST be before require.js, else require.js chokes on a 'anonymous define' in socket.io -->
 <script src="../../../socket.io/socket.io.js"></script>
 <script src="../../vendor/tquery/build/tquery-bundle-require.js"></script>
 <script src="../../../src/client.js"></script>
-<body><div style="position: absolute; font-size: 200%; right: 1em; bottom: 0.5em; z-index: 1; text-align: right;">
+<body><div style="position: absolute; font-size: 200%; right: 1em; bottom: 0.5em; text-align: right;">
 	<form action="javascript:void(0)" id='nicknameForm' style='display: inline-block'>
 		<input type="text"/>
 	</form>
@@ -32,8 +32,8 @@
 	<form action="javascript:void(0)" id='chatInputForm'>
 		<input size=104 type="text" placeholder='Chat here'/>
 	</form>
-</div><div id="info" style="z-index: 2">
-	Chat and Fight by<a href='http://twitter.com/jerome_etienne' target='_blank'>@jerome_etienne</a>
+</div><div id="info">
+	Chat and Fight by <a href='http://twitter.com/jerome_etienne' target='_blank'>@jerome_etienne</a>
 	<br/>
 	<a href='https://github.com/mrdoob/three.js/' target='_blank'>three.js</a> with
 	<a href='http://jeromeetienne.github.com/tquery/' target='_blank'>tQuery API</a> for 3D
@@ -72,7 +72,7 @@ require([
 	tQuery.MicroeventMixin(yeller);
 
 	// enable shaddow in the renderer
-//	world.shadowMapEnabled(true);
+	world.shadowMapEnabled(true);
 
 	// enable sound
 	if( WebAudio.isAvailable ){
@@ -215,4 +215,24 @@ require([
 </script>
 <!-- github ribbon -->
 <a href="https://github.com/jeromeetienne/chatandfight" target='_blank'><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+
+<!-- share buttons -->
+<div style='position: absolute; margin: 10px'>
+	<!-- twitter share button -->
+	<a href="https://twitter.com/share" class="twitter-share-button" data-text='Chat and Fight is a fun multiplayer game in webgl. Check it out!' data-via="jerome_etienne">Tweet</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+	<br/>
+	<!-- google plus button -->
+	<!-- Place this tag where you want the +1 button to render. -->
+	<div class="g-plusone" data-size="small"></div>
+
+	<!-- Place this tag after the last +1 button tag. -->
+	<script type="text/javascript">
+	  (function() {
+	    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+	    po.src = 'https://apis.google.com/js/plusone.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	  })();
+	</script>
+</div>
 </body>

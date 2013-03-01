@@ -30,7 +30,7 @@ var SceneGround	= function(opts){
 	}
 
 	// create the text
-	if( false ){
+	if( true ){
 		var text	= tQuery.createText(opts.roomName, {
 			bevelThickness	: 0.1,
 			bevelSize	: 0.03,

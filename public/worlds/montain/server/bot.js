@@ -68,7 +68,6 @@ return
 	}
 	
 	if( Math.random() < 1/100 ){
-return		
 		var sentences	= [
 			'I am me! Are you you?',
 			'I gonna kick your ass!',
