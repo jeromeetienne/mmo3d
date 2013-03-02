@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 // require.js module definition
 define( [ 'tquery.skymap'
-	, 'tquery.grassground'
-	, 'tquery.montainarena'
+	// , 'tquery.grassground'
+	// , 'tquery.montainarena'
 	, 'tquery.text'
 	, 'tquery.checkerboard'
 ], function(){
@@ -19,7 +19,8 @@ var SceneGround	= function(opts){
 		roomName: "Public"
 	});
 	var world	= opts.world;
-	
+	var runOnMobile	= 'ontouchstart' in window ? true : false;
+
 	// add a skybox
 	if( true ){
 		var textureUrls	= tQuery.TextureCube.createUrls('mars', '.jpg', '../../vendor/tquery/plugins/assets/images/textures/cube');
@@ -30,7 +31,7 @@ var SceneGround	= function(opts){
 	}
 
 	// create the text
-	if( true ){
+	if( true && runOnMobile === false ){
 		var text	= tQuery.createText(opts.roomName, {
 			bevelThickness	: 0.1,
 			bevelSize	: 0.03,

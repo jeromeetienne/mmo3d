@@ -58,11 +58,11 @@ var worldName	= 'montain';
 require([
 	  'tquery.pproc'
 
-	, 'scene-light'
-	, 'scene-ground'
-	, 'character'
-	, 'player'
-	, 'sounds'
+	, 'js/scene-light'
+	, 'js/scene-ground'
+	, 'js/character'
+	, 'js/player'
+	, 'js/sounds'
 	, 'js/pageui'
 ], function(){
 	var world	= tQuery.createWorld().start().pageTitle('#info').boilerplate({
@@ -75,6 +75,12 @@ require([
 
 	// enable shaddow in the renderer
 	world.shadowMapEnabled(true);
+
+	var runOnMobile	= 'ontouchstart' in window ? true : false;
+	if( runOnMobile ){
+		world.devicePixelRatio(1/2)
+		world.shadowMapEnabled(false);		
+	}
 
 	// enable sound
 	sounds	= new Sounds();

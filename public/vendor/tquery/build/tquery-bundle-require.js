@@ -38978,6 +38978,11 @@ tQuery.registerStatic('createTorusKnot', function(){
 	return this._createMesh(ctor, dflGeometry, arguments)
 });
 
+tQuery.registerStatic('createCircle', function(){
+	var ctor	= THREE.CircleGeometry;
+	var dflGeometry	= [0.5, 32];
+	return this._createMesh(ctor, dflGeometry, arguments)
+});
 
 tQuery.registerStatic('createVector3', function(x, y, z){
 	return new THREE.Vector3(x, y, z);
@@ -39982,7 +39987,7 @@ tQuery.World.registerInstance('boilerplate', function(opts){
 tQuery.World.registerInstance('pageTitle', function(element){
 	// handle parameters polymorphism
 	if( typeof(element) === 'string' ){
-		var element	= document.querySelector(element);
+		element	= document.querySelector(element);
 	}
 	// sanity check
 	console.assert( element instanceof HTMLElement, ".pageTitle(element) needs a HTMLElement");
@@ -39994,6 +39999,19 @@ tQuery.World.registerInstance('pageTitle', function(element){
 	element.style.fontColor	= "white";
 	element.style.paddingTop= "0.5em";
 	element.style.fontFamily= "arial";
+	// for chained API
+	return this;
+});
+
+tQuery.World.registerInstance('devicePixelRatio', function(ratio){
+	// change devicePixelRatio
+	var tRenderer	= this.tRenderer();
+	tRenderer.devicePixelRatio	= ratio;
+
+	// get context
+	var ctx		= tQuery.data(this, '_boilerplateCtx');
+	var windowResize= ctx.windowResize;
+	windowResize.trigger();
 	// for chained API
 	return this;
 });
@@ -40094,7 +40112,8 @@ tQuery.World.registerInstance('removeBoilerplate', function(){
 	ctx.screenshot		&& ctx.screenshot.unbind();
 	// unbind fullscreen
 	ctx.fullscreen		&& ctx.fullscreen.unbind();
-});// This THREEx helper makes it easy to handle window resize.
+});
+// This THREEx helper makes it easy to handle window resize.
 // It will update renderer and camera when window is resized.
 //
 // # Usage
@@ -40121,10 +40140,12 @@ var THREEx	= THREEx 		|| {};
 */
 THREEx.WindowResize	= function(renderer, camera){
 	var callback	= function(){
+		var renderW	= window.innerWidth;
+		var renderH	= window.innerHeight;
 		// notify the renderer of the size change
-		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.setSize( renderW, renderH );
 		// update the camera
-		camera.aspect	= window.innerWidth / window.innerHeight;
+		camera.aspect	= renderW / renderH;
 		camera.updateProjectionMatrix();
 	}
 	// bind the resize event
@@ -40137,7 +40158,13 @@ THREEx.WindowResize	= function(renderer, camera){
 		stop	: function(){
 			window.removeEventListener('resize', callback);
 		},
-		resize	: callback,
+		/**
+		 * to manually trigger a resize
+		 * @type {[type]}
+		 */
+		trigger	: function(){
+			callback();
+		},
 	};
 }
 
