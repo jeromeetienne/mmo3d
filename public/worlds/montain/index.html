@@ -34,6 +34,8 @@
 	</form>
 </div><div id="info">
 	Chat and Fight by <a href='http://twitter.com/jerome_etienne' target='_blank'>@jerome_etienne</a>
+	-
+	multiplayer game in WebGL
 	<br/>
 	<a href='https://github.com/mrdoob/three.js/' target='_blank'>three.js</a> with
 	<a href='http://jeromeetienne.github.com/tquery/' target='_blank'>tQuery API</a> for 3D
@@ -55,13 +57,13 @@ var gameServer	= null;
 var worldName	= 'montain';
 require([
 	  'tquery.pproc'
-	, 'tquery.webaudio'
 
 	, 'scene-light'
 	, 'scene-ground'
 	, 'character'
 	, 'player'
-	, 'pageui'
+	, 'sounds'
+	, 'js/pageui'
 ], function(){
 	var world	= tQuery.createWorld().start().pageTitle('#info').boilerplate({
 		fullscreen	: false,
@@ -75,14 +77,7 @@ require([
 	world.shadowMapEnabled(true);
 
 	// enable sound
-	if( WebAudio.isAvailable ){
-		world.enableWebAudio();
-		sounds.chatReceived	= tQuery.createSound().load('../../sounds/checkpoint.wav');
-		sounds.skinChange	= tQuery.createSound().load('../../sounds/eatpill.mp3');
-		sounds.nickChange	= tQuery.createSound().load('../../sounds/gearwhine.wav');
-		sounds.userJoin		= tQuery.createSound().load('../../sounds/gearwhine.wav');
-		sounds.userLeft		= tQuery.createSound().load('../../sounds/gearwhine.wav');
-	}
+	sounds	= new Sounds();
 
 	// determine roomName
 	var location	= window.location

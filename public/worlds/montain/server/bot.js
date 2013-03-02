@@ -57,8 +57,8 @@ Bot.prototype.update = function(delta, now) {
 	this._positionChange.rotation.y	= -angle;
 
 	this._room.emit('clientBroadcast', {
-		sourceId	: this._sourceId,
-		message		: this._positionChange
+		sourceId: this._sourceId,
+		message	: this._positionChange
 	});
 
 	if( Math.random() < 1/100 ){
