@@ -34,6 +34,7 @@ requirejs.config({
 			"tquery.objectcoord": "plugins/objectcoord/tquery.object3d.coordinate",
 			"tquery.physics": "plugins/physics/tquery.physijs",
 			"tquery.planets": "plugins/requirejs/confrequire/planets.initrequire",
+			"tquery.playerinput": "plugins/playerinput/tquery.playerinput.keyboard",
 			"tquery.poolball": "plugins/poolball/tquery.poolball",
 			"tquery.pproc": "plugins/pproc/tquery.effectcomposer",
 			"tquery.shape": "plugins/shape/tquery.shape",
@@ -44,6 +45,7 @@ requirejs.config({
 			"tquery.text.allfonts": "plugins/text/fonts/droid/droid_serif_regular.typeface",
 			"tquery.tweenjs": "plugins/tweenjs/tquery.tween",
 			"tquery.videos": "plugins/videos/tquery.createvideotexture",
+			"tquery.virtualjoystick": "plugins/virtualjoystick/vendor/virtualjoystick",
 			"tquery.webaudio": "plugins/requirejs/confrequire/webaudio.initrequire",
 			"webgl-inspector": "plugins/requirejs/confrequire/webglinspector.initrequire",
 			"domReady": "plugins/requirejs/vendor/domReady",
@@ -139,6 +141,7 @@ requirejs.config({
 			"plugins/minecraft/tquery.minecraftchar",
 			"plugins/minecraft/tquery.minecraftchar.keyboard2",
 			"tquery.keyboard",
+			"plugins/minecraft/tquery.minecraftcharcontrols",
 			"plugins/minecraft/tquery.camerafpscontrols",
 			"plugins/minecraft/tquery.spritesheet",
 			"plugins/minecraft/tquery.minecraftcharanimations",
@@ -163,6 +166,15 @@ requirejs.config({
 		],
 		"plugins/requirejs/confrequire/planets.initrequire": [
 			"plugins/planets/tquery.createplanet"
+		],
+		"plugins/playerinput/tquery.playerinput.keyboard": [
+			"tquery.keyboard",
+			"plugins/playerinput/tquery.playerinput",
+			"plugins/playerinput/tquery.playerinput.virtualjoystick"
+		],
+		"plugins/playerinput/tquery.playerinput.virtualjoystick": [
+			"tquery.virtualjoystick",
+			"plugins/playerinput/tquery.playerinput"
 		],
 		"plugins/pproc/tquery.effectcomposer": [
 			"three.js/shaders/BleachBypassShader",

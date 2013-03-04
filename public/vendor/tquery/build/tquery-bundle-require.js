@@ -37496,8 +37496,8 @@ tQuery.pluginsStaticOn	= function(klass){
 	tQuery._pluginsOn(klass, klass, 'Static');
 };
 
-// make it pluginable
-tQuery.pluginsStaticOn(tQuery, tQuery);
+// make it pluginable as static
+tQuery.pluginsStaticOn(tQuery);
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -37613,6 +37613,27 @@ tQuery.MicroeventMixin	= function(destObj){
 		return this;
 	}
 };
+
+/**
+ * https://github.com/jeromeetienne/MicroCache.js
+*/
+tQuery.MicroCache	= function(){
+	var _values	= {};
+	return {
+		get	: function(key){ return _values[key];	},
+		contains: function(key){ return key in _values;	},
+		remove	: function(key){ delete _values[key];	},
+		set	: function(key, value){	_values[key] = value;},
+		values	: function(){ return _values;	},
+		getSet	: function(key, value){
+			if( !this.contains(key) ){
+				this.set(key, typeof value == 'function' ? value() : value )
+			}
+			return this.get(key);
+		}
+	}
+}
+
 
 tQuery.convert	= {};
 
@@ -39262,7 +39283,10 @@ tQuery.mixinAttributes(tQuery.SpotLight, {
 	shadowCameraLeft	: tQuery.convert.toNumber,
 	shadowCameraTop		: tQuery.convert.toNumber,
 	shadowCameraBottom	: tQuery.convert.toNumber,
-	shadowCameraVisible	: tQuery.convert.toBoolean
+	shadowCameraVisible	: tQuery.convert.toBoolean,
+	
+	shadowCameraNear	: tQuery.convert.toNumber,
+	shadowCameraFar		: tQuery.convert.toNumber
 });
 
 
@@ -40079,6 +40103,13 @@ tQuery.World.registerInstance('addBoilerplate', function(opts){
 		this.removeBoilerplate();	
 	});
 	
+	
+	// if on mobile, set devicePixelRatio to 1/2
+	// NOTE: assume that having touch event implies a mobile, it may not be true
+	var onMobile	= 'ontouchstart' in window ? true : false;
+	onMobile	&& this.devicePixelRatio(1/2)
+	
+
 	// for chained API
 	return this;
 });
@@ -40566,6 +40597,7 @@ requirejs.config({
 			"tquery.objectcoord": "plugins/objectcoord/tquery.object3d.coordinate",
 			"tquery.physics": "plugins/physics/tquery.physijs",
 			"tquery.planets": "plugins/requirejs/confrequire/planets.initrequire",
+			"tquery.playerinput": "plugins/playerinput/tquery.playerinput.keyboard",
 			"tquery.poolball": "plugins/poolball/tquery.poolball",
 			"tquery.pproc": "plugins/pproc/tquery.effectcomposer",
 			"tquery.shape": "plugins/shape/tquery.shape",
@@ -40576,6 +40608,7 @@ requirejs.config({
 			"tquery.text.allfonts": "plugins/text/fonts/droid/droid_serif_regular.typeface",
 			"tquery.tweenjs": "plugins/tweenjs/tquery.tween",
 			"tquery.videos": "plugins/videos/tquery.createvideotexture",
+			"tquery.virtualjoystick": "plugins/virtualjoystick/vendor/virtualjoystick",
 			"tquery.webaudio": "plugins/requirejs/confrequire/webaudio.initrequire",
 			"webgl-inspector": "plugins/requirejs/confrequire/webglinspector.initrequire",
 			"domReady": "plugins/requirejs/vendor/domReady",
@@ -40671,6 +40704,7 @@ requirejs.config({
 			"plugins/minecraft/tquery.minecraftchar",
 			"plugins/minecraft/tquery.minecraftchar.keyboard2",
 			"tquery.keyboard",
+			"plugins/minecraft/tquery.minecraftcharcontrols",
 			"plugins/minecraft/tquery.camerafpscontrols",
 			"plugins/minecraft/tquery.spritesheet",
 			"plugins/minecraft/tquery.minecraftcharanimations",
@@ -40695,6 +40729,15 @@ requirejs.config({
 		],
 		"plugins/requirejs/confrequire/planets.initrequire": [
 			"plugins/planets/tquery.createplanet"
+		],
+		"plugins/playerinput/tquery.playerinput.keyboard": [
+			"tquery.keyboard",
+			"plugins/playerinput/tquery.playerinput",
+			"plugins/playerinput/tquery.playerinput.virtualjoystick"
+		],
+		"plugins/playerinput/tquery.playerinput.virtualjoystick": [
+			"tquery.virtualjoystick",
+			"plugins/playerinput/tquery.playerinput"
 		],
 		"plugins/pproc/tquery.effectcomposer": [
 			"three.js/shaders/BleachBypassShader",

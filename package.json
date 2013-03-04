@@ -4,7 +4,7 @@
     "start": "src/server.js"
   },
   "subdomain": "jetienne.chatandfight",
-  "version": "0.0.0-56",
+  "version": "0.0.0-57",
   "engines": {
     "node": "0.8.x"
   },

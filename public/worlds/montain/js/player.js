@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 // require.js module definition
-define( [ 'tquery.keyboard'
+define( [ 'tquery.playerinput'
 	, 'js/character'
 ], function(){
 //////////////////////////////////////////////////////////////////////////////////
@@ -32,12 +32,20 @@ var Player	= function(opts){
 	world.setCameraControls(cameraControls)
 
 	//////////////////////////////////////////////////////////////////////////
+	// init player input							//
+	//////////////////////////////////////////////////////////////////////////
+	var onMobile	= 'ontouchstart' in window ? true : false;
+	var playerInput	= tQuery.createPlayerInput();
+	// TOTO make them compatible one with the others. 
+	onMobile === true	&& tQuery.PlayerInput.createVirtualJoystick(playerInput)
+	onMobile === false 	&& tQuery.PlayerInput.createKeyboard(playerInput)
+
+	//////////////////////////////////////////////////////////////////////////
 	// user controls on keyboard						//
 	//////////////////////////////////////////////////////////////////////////
-	tQuery.createMinecraftCharKeyboard2({
-		object3D	: character3D,
-		lateralMove	: 'rotationY',
-	});
+	var controls	= tQuery.createMinecraftCharControls(this._character)
+		.input(playerInput)
+
 	
 	// test if the character is out of the world
 	world.loop().hook(function(){
