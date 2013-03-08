@@ -5,10 +5,19 @@ define( [], function(){
 
 var PageUI	= function(){
 	document.body.setAttribute("tabIndex", "0");	// make body focusable
+	
+	// event produced inside the UI must not be propagated
+	var uiContainer	= document.querySelector('#uiContainer');
+	var eventNames	= ['keydown', 'mouseup', 'mousedown', 'mousemove'
+			, 'touchstart', 'touchend', 'touchmove'];
+	eventNames.forEach(function(eventName){
+		uiContainer.addEventListener(eventName, function(event){
+			event.stopPropagation();
+		})
+	})
 
 	// handle roomNameForm
 	var roomNameForm	= document.getElementById('roomNameForm')
-	roomNameForm.addEventListener('keydown', function(event){ event.stopPropagation();	});
 	roomNameForm.addEventListener('submit', function(){
 		window.location.hash	= '#' + roomNameForm[0].value;
 		window.location.reload();
