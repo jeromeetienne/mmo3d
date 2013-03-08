@@ -1,9 +1,12 @@
-<!doctype html><title>Chat and fight - multi player game in WebGL</title>
+<!doctype html>
+<html manifest="manifest.appcache">
+<!-- <html>
+ --><title>Chat and fight - multi player game in WebGL</title>
 <!-- socket.io MUST be before require.js, else require.js chokes on a 'anonymous define' in socket.io -->
 <script src="../../../socket.io/socket.io.js"></script>
 <script src="../../vendor/tquery/build/tquery-bundle-require.js"></script>
 <script src="../../../src/client.js"></script>
-<body><div style="position: absolute; font-size: 200%; right: 1em; bottom: 0.5em; text-align: right;">
+<body><div style="position: absolute; font-size: 200%; right: 1em; bottom: 0.5em; text-align: right;" id='uiContainer'>
 	<form action="javascript:void(0)" id='nicknameForm' style='display: inline-block'>
 		<input type="text"/>
 	</form>
@@ -43,14 +46,6 @@
 	<a href='http://jeromeetienne.github.com/webaudio.js/' target='_blank'>webaudio.js</a> for sound
 	- hosted on <a href='http://nodejitsu.com/' target='_blank'>nodejitsu</a>
 </div><script>
-requirejs.config({
-	paths	: {
-		"build"		: "/public/vendor/tquery/build",
-		"plugins"	: "/public/vendor/tquery/plugins",
-		'threex'	: '/public/vendor/tquery/vendor/threex',
-		'three.js'	: '/public/vendor/tquery/vendor/three.js',
-	},
-});
 var yeller	= {};
 var sounds	= {};
 var gameServer	= null;
@@ -69,6 +64,8 @@ require([
 		fullscreen	: false,
 		screenshot	: false
 	});
+	
+	document.querySelector('#canvasContainer').appendChild(world.tRenderer().domElement)
 
 	// setup yeller
 	tQuery.MicroeventMixin(yeller);
@@ -236,4 +233,6 @@ require([
 	  })();
 	</script>
 </div>
-</body>
+<div id='canvasContainer'>
+</div>
+</body></html>
