@@ -1,0 +1,14 @@
+{
+	"name"		: "Chat and Fight",
+	"description"	: "Chat and Fight with your friends. It is fun and free",
+	"version"	: "1.0.0",
+	"app"		: {
+		"launch": {
+			"web_url": "http://jetienne.chatandfight.jit.su/"
+		}
+	},
+	"icons"		: {
+		"128": "smiley128.png"
+	},
+	"manifest_version"	: 2
+}
