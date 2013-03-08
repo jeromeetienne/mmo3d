@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-#version 1.0 3-6-2013
+#version 1.0 3-8-2013
 
 CACHE:
 
@@ -8,6 +8,7 @@ CACHE:
 https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png
 
 #internal HTML documents
+index.html
 
 
 #style sheets
@@ -20,9 +21,9 @@ chrome-extension://cpngackimfmofbokmjmljamhdncknpmg/style.css
 https://apis.google.com/_/scs/apps-static/_/js/k=oz.gapi.en.U8L98Aa_oZI.O/m=plusone/am=qQ/rt=j/d=1/rs=AItRSTNiavJfhIuiqT2C9580v05JS78UvQ/cb=gapi.loaded_0
 https://apis.google.com/js/plusone.js
 http://platform.twitter.com/widgets.js
-http://127.0.0.1:8000/socket.io/socket.io.js
+/socket.io/socket.io.js
 /public/vendor/tquery/build/tquery-bundle-require.js
-http://127.0.0.1:8000/src/client.js
+/src/client.js
 /public/vendor/tquery/vendor/three.js/shaders/BleachBypassShader.js
 /public/vendor/tquery/vendor/three.js/shaders/BlendShader.js
 /public/vendor/tquery/vendor/three.js/shaders/CopyShader.js
