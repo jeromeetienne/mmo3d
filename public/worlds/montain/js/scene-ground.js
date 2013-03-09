@@ -23,8 +23,11 @@ var SceneGround	= function(opts){
 
 	// add a skybox
 	if( true ){
-		var textureUrls	= tQuery.TextureCube.createUrls('mars', '.jpg', '../../vendor/tquery/plugins/assets/images/textures/cube');
-		var textureCube	= tQuery.createCubeTexture(textureUrls);
+		var textureCube	= cache.getSet('textureCubeMars', function(){
+			var textureUrls	= tQuery.TextureCube.createUrls('mars', '.jpg', '../../vendor/tquery/plugins/assets/images/textures/cube');
+			var textureCube	= tQuery.createCubeTexture(textureUrls);
+			return textureCube;
+		});
 		tQuery.createSkymap({
 			textureCube	: textureCube
 		}).addTo(world);

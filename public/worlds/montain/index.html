@@ -1,8 +1,10 @@
 <!doctype html>
 <html manifest="manifest.appcache">
-<!-- <html>
- --><title>Chat and fight - multi player game in WebGL</title>
-<!-- socket.io MUST be before require.js, else require.js chokes on a 'anonymous define' in socket.io -->
+<!-- <html> -->
+
+<title>Chat and fight - multi player game in WebGL</title>
+<!-- socket.io MUST be before require.js, else require.js chokes on a 'anonymous define' in socket.io
+-->
 <script src="../../../socket.io/socket.io.js"></script>
 <script src="../../vendor/tquery/build/tquery-bundle-require.js"></script>
 <script src="../../../src/client.js"></script>
@@ -50,6 +52,7 @@ var yeller	= {};
 var sounds	= {};
 var gameServer	= null;
 var worldName	= 'montain';
+var cache	= new tQuery.MicroCache();
 require([
 	  'tquery.pproc'
 
@@ -60,6 +63,9 @@ require([
 	, 'js/sounds'
 	, 'js/pageui'
 ], function(){
+	// setup yeller
+	tQuery.MicroeventMixin(yeller);
+
 	var world	= tQuery.createWorld().start().pageTitle('#info').boilerplate({
 		fullscreen	: false,
 		screenshot	: false
@@ -69,17 +75,11 @@ require([
 	
 	document.querySelector('#canvasContainer').appendChild(world.tRenderer().domElement)
 
-	// setup yeller
-	tQuery.MicroeventMixin(yeller);
-
 	// enable shaddow in the renderer
 	world.shadowMapEnabled(true);
 
 	var runOnMobile	= 'ontouchstart' in window ? true : false;
-	if( runOnMobile ){
-		world.devicePixelRatio(1/2)
-		world.shadowMapEnabled(false);		
-	}
+	if( runOnMobile )	world.shadowMapEnabled(false);
 
 	// enable sound
 	sounds	= new Sounds();
@@ -89,13 +89,6 @@ require([
 	location.hash	= location.hash	|| 'Public';
 	var roomName	= location.hash.slice(1);
 
-
-	//////////////////////////////////////////////////////////////////////////
-	//		Scene							//
-	//////////////////////////////////////////////////////////////////////////
-	var sceneGround	= new SceneGround({
-		roomName	: roomName
-	});
 
 	//////////////////////////////////////////////////////////////////////////
 	//		lights							//
@@ -119,6 +112,7 @@ require([
 	});
 
 	gameServer.addEventListener('roomJoined', function(sourceId, usersInfo){
+		yeller.dispatchEvent('roomJoined');
 		// console.log('roomJoined', sourceId, usersInfo, gameServer.usersInfo())
 		// create the player
 		player	= new Player({
@@ -211,8 +205,31 @@ require([
 	pageUI.addEventListener('say', function(value){
 		player.say(value)
 	})
-})
+	
+
+	tQuery.Flow().par(function(next){
+		cache.getSet('textureCubeMars', function(){
+			var textureUrls	= tQuery.TextureCube.createUrls('mars', '.jpg', '../../vendor/tquery/plugins/assets/images/textures/cube');
+			var textureCube	= THREE.ImageUtils.loadTextureCube(textureUrls, undefined, function(){
+				next();
+			});
+			return textureCube;
+		});			
+	}).par(function(next){
+		var callback	= yeller.addEventListener('roomJoined', function(){
+			yeller.removeEventListener('roomJoined', callback);
+			next();
+		})
+	}).seq(function(){
+		new SceneGround({
+			roomName	: roomName
+		});		
+		// remove the loading display
+		document.querySelector('#loadingDisplay').style.display	= 'none';
+	});
+});	// end of require()
 </script>
+
 <!-- github ribbon -->
 <a href="https://github.com/jeromeetienne/chatandfight" target='_blank'><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 
@@ -235,5 +252,16 @@ require([
 	  })();
 	</script>
 </div>
+
+<!-- container for canvas 3d -->
 <div id='canvasContainer'></div>
+
+<!-- loading display -->
+<div id='loadingDisplay' style='position: absolute; top:0; left:0; background: black; width: 100%; height: 100%;'>
+	<div style='color: white; text-align: center; font-size: 300%;'>
+		<br/>Loading
+		<br/><progress></progress>
+	</div>
+</div>
+
 </body></html>
