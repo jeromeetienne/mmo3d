@@ -1,4 +1,5 @@
-var app		= require('express')()
+var express	= require('express');
+var app		= express()
 
 var listenPort	= process.argv[2] || 8000;
 console.log('listen on', '0.0.0.0:'+listenPort)
@@ -7,7 +8,11 @@ var server	= require('http').createServer(app)
 server.listen(listenPort);
 
 // export static files
-app.use(require('express').static(__dirname + '/../'));
+app.use('/worlds', express.static(__dirname + '/../public/worlds'));
+app.use('/sounds', express.static(__dirname + '/../public/sounds'));
+app.use('/vendor', express.static(__dirname + '/../public/vendor'));
+
+app.use('/', express.static(__dirname + '/..'));
 
 
 /**

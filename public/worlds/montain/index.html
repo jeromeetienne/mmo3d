@@ -1,13 +1,13 @@
 <!doctype html>
-<html manifest="manifest.appcache">
-<!-- <html> -->
+<!-- <html manifest="manifest.appcache"> -->
+<html>
 
 <title>Chat and fight - multi player game in WebGL</title>
 <!-- socket.io MUST be before require.js, else require.js chokes on a 'anonymous define' in socket.io
 -->
 <script src="../../../socket.io/socket.io.js"></script>
 <script src="../../vendor/tquery/build/tquery-bundle-require.js"></script>
-<script src="../../../src/client.js"></script>
+<script src="../../vendor/client.js"></script>
 <body><div style="position: absolute; font-size: 200%; right: 1em; bottom: 0.5em; text-align: right;" id='uiContainer'>
 	<form action="javascript:void(0)" id='nicknameForm' style='display: inline-block'>
 		<input type="text"/>
@@ -259,7 +259,7 @@ require([
 <!-- loading display -->
 <div id='loadingDisplay' style='position: absolute; top:0; left:0; background: black; width: 100%; height: 100%;'>
 	<div style='color: white; text-align: center; font-size: 300%;'>
-		<br/>Loading
+		<br/>Loading&hellip;
 		<br/><progress></progress>
 	</div>
 </div>
