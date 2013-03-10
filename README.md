@@ -25,7 +25,7 @@ make server
 ### Step 3: copy an existing world
 
 ```
-cp -a public/worlds/montain public/worlds/foobar
+cp -a public/montain public/foobar
 ```
 
 ### Step 4: modify code of foobar world to fit your need
@@ -34,7 +34,7 @@ use your text editor :)
 
 ### Step 5: check your result
 
-point your browser [here](http://127.0.0.1:8000/public/worlds/foobar)
+point your browser [here](http://127.0.0.1:8000/foobar)
 
 ### Step 6: publish it
 

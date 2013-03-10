@@ -5,9 +5,9 @@
 <title>Chat and fight - multi player game in WebGL</title>
 <!-- socket.io MUST be before require.js, else require.js chokes on a 'anonymous define' in socket.io
 -->
-<script src="../../../socket.io/socket.io.js"></script>
-<script src="../../vendor/tquery/build/tquery-bundle-require.js"></script>
-<script src="../../vendor/client.js"></script>
+<script src="../../socket.io/socket.io.js"></script>
+<script src="../vendor/tquery/build/tquery-bundle-require.js"></script>
+<script src="../vendor/client.js"></script>
 <body><div style="position: absolute; font-size: 200%; right: 1em; bottom: 0.5em; text-align: right;" id='uiContainer'>
 	<form action="javascript:void(0)" id='nicknameForm' style='display: inline-block'>
 		<input type="text"/>
@@ -226,6 +226,11 @@ require([
 		});		
 		// remove the loading display
 		document.querySelector('#loadingDisplay').style.display	= 'none';
+
+		// display the 'perceived load delay' in the console
+		var now		= performance.timing.navigationStart + performance.now();
+    		var loadDelay	= now - performance.timing.navigationStart;
+    		console.log('page loaded in', loadDelay, 'msec');
 	});
 });	// end of require()
 </script>

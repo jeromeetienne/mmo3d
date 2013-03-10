@@ -44,12 +44,6 @@ http://platform.twitter.com/widgets.js
 /vendor/tquery/vendor/three.js/postprocessing/SavePass.js
 /vendor/tquery/vendor/three.js/postprocessing/ShaderPass.js
 /vendor/tquery/vendor/three.js/postprocessing/TexturePass.js
-/worlds/montain/js/scene-light.js
-/worlds/montain/js/scene-ground.js
-/worlds/montain/js/character.js
-/worlds/montain/js/player.js
-/worlds/montain/js/sounds.js
-/worlds/montain/js/pageui.js
 /vendor/tquery/vendor/threex/THREEx.KeyboardState.js
 /vendor/tquery/plugins/playerinput/tquery.playerinput.js
 /vendor/tquery/plugins/virtualjoystick/vendor/virtualjoystick.js
@@ -94,6 +88,12 @@ http://platform.twitter.com/widgets.js
 /sounds/gearwhine.wav
 /sounds/eatpill.mp3
 
+/montain/js/scene-light.js
+/montain/js/scene-ground.js
+/montain/js/character.js
+/montain/js/player.js
+/montain/js/sounds.js
+/montain/js/pageui.js
 
 
 NETWORK:
