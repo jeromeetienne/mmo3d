@@ -4,7 +4,7 @@ chat and fight
 Chat and fight is a multiplayer game in webgl.
 it is very hackable. other people can easily do their own world.
 
-see [homepage](http://jetienne.chatandfight.jit.su/) for more details.
+see [homepage](http://mmo3d.jit.su/) for more details.
 
 
 # how to make your own world
@@ -12,13 +12,13 @@ see [homepage](http://jetienne.chatandfight.jit.su/) for more details.
 ### Step 1: clone the code
 
 ```
-git clone git@github.com:jeromeetienne/chatandfight.git
+git clone git@github.com:jeromeetienne/mmo3d.git
 ```
 
 ### Step 2: run the server
 
 ```
-cd chatandfight
+cd mmo3d
 make server
 ```
 
@@ -30,7 +30,7 @@ cp -a public/montain public/foobar
 
 ### Step 4: modify code of foobar world to fit your need
 
-use your text editor :)
+use your text editor in public/foobar :)
 
 ### Step 5: check your result
 
@@ -38,8 +38,8 @@ point your browser [here](http://127.0.0.1:8000/foobar)
 
 ### Step 6: publish it
 
-you do that whereever you want. Personnaly i love nodejitsu, they got 
-[free hosting for opensource](http://opensource.nodejitsu.com/)
+you do that whereever you want. Personnaly i go for nodejitsu, they got 
+[free hosting for opensource](http://opensource.nodejitsu.com/).
 
 ```
 make deploy
