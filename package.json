@@ -3,8 +3,8 @@
   "scripts": {
     "start": "src/server.js"
   },
-  "subdomain": "jetienne.chatandfight",
-  "version": "0.0.0-80",
+  "subdomain": "mmo3d",
+  "version": "0.0.0-83",
   "engines": {
     "node": "0.8.x"
   },

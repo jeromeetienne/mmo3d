@@ -1,11 +1,11 @@
 # just a little makefile to store repreatitive task
 
 #################################################################################
-#		chatandfight								#
+#		mmo3d								#
 #################################################################################
 
 build:
-	zip -r chatandfight.zip src
+	zip -r mmo3d.zip src
 	
 clean:
-	rm -rf chatandfight.zip
+	rm -rf mmo3d.zip
